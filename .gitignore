@@ -1,0 +1,4 @@
+.idea/
+.tanstack/
+node_modules/
+dev-dist/

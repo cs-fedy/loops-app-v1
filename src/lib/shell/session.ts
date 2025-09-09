@@ -1,0 +1,73 @@
+import { jwtVerify, SignJWT } from "jose"
+import {
+  deleteCookie,
+  getCookie,
+  setCookie,
+} from "@tanstack/react-start/server"
+
+export type Session = {
+  accessToken: string
+  refreshToken: string
+}
+
+const secretKey = process.env.VITE_SESSION_SECRET_KEY
+const encodedKey = new TextEncoder().encode(secretKey)
+
+export async function createSession(payload: Session) {
+  const expiredAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+
+  const session = await new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("30d")
+    .sign(encodedKey)
+
+  setCookie("refresh", session, {
+    expires: expiredAt,
+    httpOnly: true,
+    path: "/",
+    sameSite: "lax",
+    secure: true,
+  })
+}
+
+export function deleteSession() {
+  deleteCookie("refresh")
+}
+
+export async function getSession() {
+  const cookie = getCookie("refresh")
+  if (!cookie) return null
+
+  try {
+    const { payload } = await jwtVerify(cookie, encodedKey, {
+      algorithms: ["HS256"],
+    })
+
+    return payload as Session
+  } catch (err) {
+    return null
+  }
+}
+
+export async function updateTokens({
+  accessToken,
+  refreshToken,
+}: {
+  accessToken: string
+  refreshToken: string
+}) {
+  const cookie = getCookie("refresh")
+  if (!cookie) return null
+
+  const { payload } = await jwtVerify<Session>(cookie, encodedKey)
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!payload) throw new Error("Session not found")
+
+  const newPayload: Session = {
+    accessToken,
+    refreshToken,
+  }
+
+  await createSession(newPayload)
+}
