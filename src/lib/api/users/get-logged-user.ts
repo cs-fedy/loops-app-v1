@@ -1,32 +1,32 @@
 import { userNotFoundErrorSchema } from "src/lib/domain/errors/user-not-found"
 import { invalidInputFactory } from "src/lib/domain/utils/invalid-input"
-import { z } from "zod"
+import { Schema } from "effect"
 import { userSchema } from "../../domain/entities/user"
 import { instance } from "../../utils/axios"
 import { parseApiResponse } from "../../utils/parse-api-response"
 import { invalidExpiredTokenErrorSchema } from "../../domain/errors/invalid-expired-token"
 import type { Effect } from "effect"
 
-const getLoggedUserErrorsSchema = z.discriminatedUnion("code", [
+export const getLoggedUserErrorsSchema = Schema.Union(
   invalidInputFactory(
-    z.object({
-      authorization: z.string().optional(),
-      userId: z.string().optional(),
+    Schema.Struct({
+      authorization: Schema.optional(Schema.String),
+      userId: Schema.optional(Schema.String),
     }),
   ),
   invalidExpiredTokenErrorSchema,
   userNotFoundErrorSchema,
-])
+)
 
-type GetLoggedUserErrors = z.infer<typeof getLoggedUserErrorsSchema>
+export type GetLoggedUserErrors = typeof getLoggedUserErrorsSchema.Type
 
 type GetLoggedUserResult = Effect.Effect<
   GetLoggedUserSuccess,
   GetLoggedUserErrors
 >
 
-const getLoggedUserSuccessSchema = z.object({ user: userSchema })
-type GetLoggedUserSuccess = z.infer<typeof getLoggedUserSuccessSchema>
+export const getLoggedUserSuccessSchema = Schema.Struct({ user: userSchema })
+export type GetLoggedUserSuccess = typeof getLoggedUserSuccessSchema.Type
 
 export function getLoggedUser(
   providedAuthHeader?: string,

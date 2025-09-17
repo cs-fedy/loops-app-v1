@@ -1,28 +1,28 @@
 import { Effect } from "effect"
 import { isAxiosError } from "axios"
-import { parseZodSchema } from "./parse-zod-schema"
+import { parseEffectSchema } from "./parse-effect-schema"
+import type { Schema } from "effect"
 import type { AxiosResponse } from "axios"
-import type { z } from "zod"
 
-type ParseApiResponseArgs<T, U> = {
-  error: { name: string; schema: z.ZodSchema<T> }
+type ParseApiResponseArgs<T, U, TI, TR, UI, UR> = {
+  error: { name: string; schema: Schema.Schema<T, TI, TR> }
   name: string
-  success: { name: string; schema: z.ZodSchema<U> }
+  success: { name: string; schema: Schema.Schema<U, UI, UR> }
 }
 
-export function parseApiResponse<T, U>(
-  args: ParseApiResponseArgs<T, U>,
+export function parseApiResponse<T, U, TI, TR, UI, UR>(
+  args: ParseApiResponseArgs<T, U, TI, TR, UI, UR>,
 ): (response: Promise<AxiosResponse>) => Effect.Effect<U, T> {
   return (response) => {
     return Effect.tryPromise({
       catch: (e) => {
-        if (isAxiosError(e) && e.response && args.error.schema.type !== "never")
-          return parseZodSchema(args.error)(e.response.data)
+        if (isAxiosError(e) && e.response)
+          return parseEffectSchema(args.error.schema, e.response.data)
         throw new Error(`Unable to parse ${args.name} schema`)
       },
       try: () =>
         response.then(({ data }) => {
-          return parseZodSchema(args.success)(data)
+          return parseEffectSchema(args.success.schema, data)
         }),
     })
   }

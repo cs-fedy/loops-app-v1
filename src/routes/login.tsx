@@ -6,7 +6,8 @@ import { LoginGoogle } from "@/features/login_google/login-google"
 
 export const Route = createFileRoute("/login")({
   beforeLoad: async () => {
-    if (await isAuthenticated()) {
+    const response = await isAuthenticated()
+    if (response._tag === "Success") {
       throw redirect({ to: "/" })
     }
   },

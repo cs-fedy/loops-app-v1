@@ -1,8 +1,8 @@
-import { z } from "zod"
+import { Schema } from "effect"
 
-export const userNotFoundErrorSchema = z.object({
-  code: z.literal("user_not_found"),
-  message: z.string(),
+export const userNotFoundErrorSchema = Schema.Struct({
+  code: Schema.Literal("user_not_found"),
+  message: Schema.String,
 })
 
-export type UserNotFoundError = z.infer<typeof userNotFoundErrorSchema>
+export type UserNotFoundError = typeof userNotFoundErrorSchema.Type

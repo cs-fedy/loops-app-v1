@@ -18,7 +18,10 @@ export function LoginForm() {
   const form = useForm({
     defaultValues: { password: "", username: "" },
     onSubmit: async ({ value }) => {
-      await handleLogin(value.username, value.password)
+      const response = await handleLogin(value.username, value.password)
+      if (response._tag === "Failure") {
+        console.log(response)
+      }
     },
   })
 

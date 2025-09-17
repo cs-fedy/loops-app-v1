@@ -5,10 +5,13 @@ import { defineConfig } from "vite"
 import { VitePWA } from "vite-plugin-pwa"
 import tsConfigPaths from "vite-tsconfig-paths"
 
+// TODO: handle error propagation
+// TODO: handle all expected and unexpected errors
+
 export default defineConfig({
   plugins: [
     tsConfigPaths(),
-    tanstackStart({ customViteReactPlugin: true }),
+    tanstackStart({ customViteReactPlugin: true, target: "node-server" }),
     VitePWA({
       devOptions: { enabled: true },
       manifest: {

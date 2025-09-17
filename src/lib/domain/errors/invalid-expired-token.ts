@@ -1,10 +1,8 @@
-import { z } from "zod"
+import { Schema } from "effect"
 
-export const invalidExpiredTokenErrorSchema = z.object({
-  code: z.literal("invalid_token"),
-  message: z.string(),
+export const invalidExpiredTokenErrorSchema = Schema.Struct({
+  code: Schema.Literal("invalid_token"),
+  message: Schema.String,
 })
 
-export type InvalidExpiredTokenError = z.infer<
-  typeof invalidExpiredTokenErrorSchema
->
+export type InvalidExpiredTokenError = typeof invalidExpiredTokenErrorSchema.Type

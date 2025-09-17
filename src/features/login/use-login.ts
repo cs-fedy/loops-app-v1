@@ -1,33 +1,9 @@
+// src/hooks/useLogin.ts
 import { useCallback } from "react"
-import { createServerFn, useServerFn } from "@tanstack/react-start"
-import { z } from "zod"
-import { Effect } from "effect"
+import { useServerFn } from "@tanstack/react-start"
 import { useNavigate } from "@tanstack/react-router"
-import { login } from "@/lib/api/auth/login"
-import { interceptRequests } from "@/lib/utils/axios"
-import { createSession } from "@/lib/shell/session"
-
-const loginFn = createServerFn({ method: "POST", response: "data" })
-  .validator(
-    z.object({
-      password: z.string(),
-      username: z.string(),
-    }),
-  )
-  .handler((ctx) => {
-    const response = login(ctx.data)
-
-    const data = Effect.runSyncExit(response)
-    if (data._tag === "Success") {
-      interceptRequests(data.value.access.token)
-      createSession({
-        accessToken: data.value.access.token,
-        refreshToken: data.value.refresh.token,
-      })
-    }
-
-    return data.toJSON()
-  })
+import { loginFn } from "./login-fn.server"
+import type { LoginWire } from "./login-fn.server"
 
 export function useLogin() {
   const logUser = useServerFn(loginFn)
@@ -35,11 +11,20 @@ export function useLogin() {
 
   const handleLogin = useCallback(
     async (username: string, password: string) => {
-      const response = await logUser({ data: { password, username } })
-      if (!response) await navigate({ to: "/" })
+      // Call server function → returns JSON-safe union
+      const response = (await logUser({
+        data: { password, username },
+      })) as LoginWire
+
+      // No runtime decode on client. If you still want runtime checks,
+      // you can add a tiny inline type guard here.
+      if (response._tag === "Success") {
+        await navigate({ to: "/" })
+      }
+
       return response
     },
-    [],
+    [logUser, navigate],
   )
 
   return { handleLogin }

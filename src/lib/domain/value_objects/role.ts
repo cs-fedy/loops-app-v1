@@ -1,5 +1,5 @@
-import { z } from "zod"
+import { Schema } from "effect"
 
-export const roleSchema = z.enum(["admin", "content_creator", "user"])
+export const roleSchema = Schema.Literal("admin", "content_creator", "user")
 
-export type Role = z.infer<typeof roleSchema>
+export type Role = typeof roleSchema.Type

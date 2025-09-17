@@ -1,4 +1,8 @@
-import { z } from "zod"
+import { Schema } from "effect"
 
-export const invalidInputFactory = <T extends z.ZodTypeAny>(payload: T) =>
-  z.object({ code: z.literal("invalid_input"), message: z.string(), payload })
+export const invalidInputFactory = <A, I, R>(payload: Schema.Schema<A, I, R>) =>
+  Schema.Struct({
+    code: Schema.Literal("invalid_input"),
+    message: Schema.String,
+    payload,
+  })

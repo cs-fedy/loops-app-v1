@@ -22,11 +22,7 @@ export function interceptRequests(accessToken: string) {
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (
-      !error.response ||
-      error.response.data.code === "invalid_input" ||
-      error.response.data.code === "invalid_token"
-    )
+    if (!error.response || error.response.data.code !== "invalid_token")
       return Promise.reject(error)
 
     const session = await getSession()
@@ -37,6 +33,8 @@ instance.interceptors.response.use(
     const promise = Effect.match(response, {
       onFailure: (failure) => {
         deleteSession()
+        // TODO: handle here returning a custom error that
+        // TODO: when catched later will trigger redirect to login page
         return Promise.reject(error)
       },
       onSuccess: (value) => {

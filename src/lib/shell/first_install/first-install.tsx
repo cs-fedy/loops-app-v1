@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
-import { LoadingScreen } from "./loading-screen"
 import { WelcomeScreen } from "./welcome-screen"
 import type { ReactNode } from "react"
+import { LoadingScreen } from "@/components/common/loading-screen"
 
 const FIRST_INSTALL_KEY = "isFirstInstall"
 
@@ -33,7 +33,7 @@ export function FirstInstallShell({ target }: FirstInstallShellProps) {
   }, [])
 
   if (isFirstInstall === null) return <LoadingScreen />
-  if (!isFirstInstall) return target
-
-  return <WelcomeScreen skipHandler={markAsNotFirstInstall} />
+  if (isFirstInstall)
+    return <WelcomeScreen skipHandler={markAsNotFirstInstall} />
+  return target
 }

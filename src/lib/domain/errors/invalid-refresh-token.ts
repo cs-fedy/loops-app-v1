@@ -1,10 +1,8 @@
-import { z } from "zod"
+import { Schema } from "effect"
 
-export const invalidRefreshTokenErrorSchema = z.object({
-  code: z.literal("invalid_refresh_token"),
-  message: z.string(),
+export const invalidRefreshTokenErrorSchema = Schema.Struct({
+  code: Schema.Literal("invalid_refresh_token"),
+  message: Schema.String,
 })
 
-export type InvalidRefreshTokenError = z.infer<
-  typeof invalidRefreshTokenErrorSchema
->
+export type InvalidRefreshTokenError = typeof invalidRefreshTokenErrorSchema.Type

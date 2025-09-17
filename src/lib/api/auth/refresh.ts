@@ -1,35 +1,37 @@
-import { z } from "zod"
+import { Schema } from "effect"
 import { loginTokensSchema } from "src/lib/domain/types/login-tokens"
 import { invalidInputFactory } from "../../domain/utils/invalid-input"
 import { invalidRefreshTokenErrorSchema } from "../../domain/errors/invalid-refresh-token"
 import { userNotFoundErrorSchema } from "../../domain/errors/user-not-found"
 import { instance } from "../../utils/axios"
-import { parseZodSchema } from "../../utils/parse-zod-schema"
+import { parseEffectSchema } from "../../utils/parse-effect-schema"
 import { parseApiResponse } from "../../utils/parse-api-response"
 import type { Effect } from "effect"
 
-const refreshArgsSchema = z.object({ refresh: z.string() }).optional()
-type RefreshArgs = z.infer<typeof refreshArgsSchema>
+const refreshArgsSchema = Schema.Struct({ refresh: Schema.String })
+type RefreshArgs = Schema.Schema.Type<typeof refreshArgsSchema>
 
-const refreshErrorsSchema = z.discriminatedUnion("code", [
-  invalidInputFactory(z.object({ refreshToken: z.string().optional() })),
+const refreshErrorsSchema = Schema.Union(
+  invalidInputFactory(
+    Schema.Struct({ refreshToken: Schema.optional(Schema.String) }),
+  ),
   invalidRefreshTokenErrorSchema,
   userNotFoundErrorSchema,
-])
+)
 
 const refreshSuccessSchema = loginTokensSchema
-type RefreshErrors = z.infer<typeof refreshErrorsSchema>
+type RefreshErrors = typeof refreshErrorsSchema.Type
 type RefreshResult = Effect.Effect<RefreshSuccess, RefreshErrors>
-type RefreshSuccess = z.infer<typeof refreshSuccessSchema>
+type RefreshSuccess = typeof refreshSuccessSchema.Type
 
 export function refreshAccessToken(args?: RefreshArgs): RefreshResult {
-  const parsedArgs = parseZodSchema({
-    name: "RefreshArgs",
-    schema: refreshArgsSchema,
-  })(args)
+  const parsedArgs = args
+    ? parseEffectSchema(Schema.Struct({ refresh: Schema.String }), args)
+    : undefined
 
-  const cookie = parsedArgs ? `refresh=${parsedArgs.refresh}` : ""
-  const response = instance.post("/auth/refresh", { Cookie: cookie })
+  const response = instance.post("/auth/refresh", {
+    refreshToken: parsedArgs?.refresh,
+  })
 
   return parseApiResponse({
     error: {

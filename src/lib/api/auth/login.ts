@@ -1,41 +1,43 @@
-import z from "zod"
+import { Schema } from "effect"
 import type { Effect } from "effect"
 import { invalidCredentialsErrorSchema } from "@/lib/domain/errors/invalid-credentials"
 import { invalidInputFactory } from "@/lib/domain/utils/invalid-input"
 import { loginTokensSchema } from "@/lib/domain/types/login-tokens"
-import { parseZodSchema } from "@/lib/utils/parse-zod-schema"
+import { parseEffectSchema } from "@/lib/utils/parse-effect-schema"
 import { instance } from "@/lib/utils/axios"
 import { parseApiResponse } from "@/lib/utils/parse-api-response"
 
-const loginArgsSchema = z.object({
-  password: z.string(),
-  username: z.string(),
+const loginArgsSchema = Schema.Struct({
+  password: Schema.String,
+  username: Schema.String,
 })
 
-type LoginArgs = z.infer<typeof loginArgsSchema>
+type LoginArgs = typeof loginArgsSchema.Type
 
-const loginErrorsSchema = z.discriminatedUnion("code", [
+export const loginErrorsSchema = Schema.Union(
   invalidInputFactory(
-    z.object({
-      password: z.string().optional(),
-      username: z.string().optional(),
+    Schema.Struct({
+      password: Schema.optional(Schema.String),
+      username: Schema.optional(Schema.String),
     }),
   ),
   invalidCredentialsErrorSchema,
-])
+)
 
-export type LoginErrors = z.infer<typeof loginErrorsSchema>
+export type LoginErrors = typeof loginErrorsSchema.Type
 
-const loginSuccessSchema = loginTokensSchema
+export const loginSuccessSchema = loginTokensSchema
 type LoginResult = Effect.Effect<LoginSuccess, LoginErrors>
-type LoginSuccess = z.infer<typeof loginSuccessSchema>
+type LoginSuccess = typeof loginSuccessSchema.Type
+
+export const loginExitSchema = Schema.Exit({
+  defect: Schema.String,
+  failure: loginErrorsSchema,
+  success: loginSuccessSchema,
+})
 
 export function login(args: LoginArgs): LoginResult {
-  const parsedArgs = parseZodSchema({
-    name: "LoginArgs",
-    schema: loginArgsSchema,
-  })(args)
-
+  const parsedArgs = parseEffectSchema(loginArgsSchema, args)
   const response = instance.post("/auth/login", parsedArgs)
 
   return parseApiResponse({

@@ -1,8 +1,14 @@
-import { z } from "zod"
+import { Schema } from "effect"
 
-export const loginTokensSchema = z.object({
-  access: z.object({ expiresIn: z.coerce.number().int(), token: z.string() }),
-  refresh: z.object({ expiresIn: z.coerce.date(), token: z.string() }),
+export const loginTokensSchema = Schema.Struct({
+  access: Schema.Struct({
+    expiresIn: Schema.DateFromString,
+    token: Schema.String,
+  }),
+  refresh: Schema.Struct({
+    expiresIn: Schema.DateFromString,
+    token: Schema.String,
+  }),
 })
 
-export type LoginTokens = z.infer<typeof loginTokensSchema>
+export type LoginTokens = typeof loginTokensSchema.Type

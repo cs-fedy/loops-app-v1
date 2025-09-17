@@ -22,7 +22,7 @@ export async function createSession(payload: Session) {
     .setExpirationTime("30d")
     .sign(encodedKey)
 
-  setCookie("refresh", session, {
+  setCookie("session", session, {
     expires: expiredAt,
     httpOnly: true,
     path: "/",
@@ -32,11 +32,11 @@ export async function createSession(payload: Session) {
 }
 
 export function deleteSession() {
-  deleteCookie("refresh")
+  deleteCookie("session")
 }
 
 export async function getSession() {
-  const cookie = getCookie("refresh")
+  const cookie = getCookie("session")
   if (!cookie) return null
 
   try {
@@ -57,7 +57,7 @@ export async function updateTokens({
   accessToken: string
   refreshToken: string
 }) {
-  const cookie = getCookie("refresh")
+  const cookie = getCookie("session")
   if (!cookie) return null
 
   const { payload } = await jwtVerify<Session>(cookie, encodedKey)

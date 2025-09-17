@@ -1,10 +1,8 @@
-import { z } from "zod"
+import { Schema } from "effect"
 
-export const invalidCredentialsErrorSchema = z.object({
-  code: z.literal("invalid_credentials"),
-  message: z.string(),
+export const invalidCredentialsErrorSchema = Schema.Struct({
+  code: Schema.Literal("invalid_credentials"),
+  message: Schema.String,
 })
 
-export type InvalidCredentialsError = z.infer<
-  typeof invalidCredentialsErrorSchema
->
+export type InvalidCredentialsError = typeof invalidCredentialsErrorSchema.Type
