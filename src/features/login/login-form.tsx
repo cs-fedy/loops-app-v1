@@ -1,5 +1,4 @@
 import { AnimatePresence, motion } from "motion/react"
-import { EyeIcon } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 import { useState } from "react"
 import { useForm } from "@tanstack/react-form"
@@ -10,6 +9,7 @@ import { LockIcon } from "@/components/icons/lock"
 import { EyeSlashIcon } from "@/components/icons/eye-slash"
 import { Button } from "@/components/ui/button"
 import { useLogin } from "@/features/login/use-login"
+import { EyeIcon } from "@/components/icons/eye"
 
 export function LoginForm() {
   const { handleLogin } = useLogin()

@@ -2,3 +2,6 @@
 .tanstack/
 node_modules/
 dev-dist/
+.figma/
+.nitro/
+.output/
