@@ -32,7 +32,7 @@ export const DigitInput = forwardRef<HTMLInputElement, DigitInputProps>(
       <input
         autoFocus={autoFocus}
         className={cn(
-          "h-16 w-16 text-center text-xl font-semibold",
+          "h-14 w-14 text-center text-lg font-semibold",
           "rounded-2xl border-0 bg-white text-gray-900",
           "focus:ring-loops-cyan focus:ring-2 focus:outline-none",
           "disabled:cursor-not-allowed disabled:opacity-50",

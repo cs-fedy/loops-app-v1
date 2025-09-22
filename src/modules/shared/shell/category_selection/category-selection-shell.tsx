@@ -157,6 +157,7 @@ function CategorySelectionScreen({
             return (
               <CategoryDetails
                 category={cachedCategory}
+                user={user}
                 onBack={handleBackNavigation}
                 onViewAll={() => handleViewAllContent(cachedCategory)}
                 showBackButton={shouldShowBackButton()}
@@ -166,6 +167,7 @@ function CategorySelectionScreen({
           return (
             <CategoryDetailsWrapper
               categoryId={searchParams.category}
+              user={user}
               onBack={handleBackNavigation}
               onViewAll={(category) => handleViewAllContent(category)}
               showBackButton={shouldShowBackButton()}

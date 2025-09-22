@@ -3,13 +3,15 @@ import { useCategoryContent } from "@/modules/content-management/features/conten
 import { DifficultyTag } from "@/modules/shared/components/common/difficulty-tag"
 import { CodeCircleIcon } from "@/modules/shared/components/icons/code-circle"
 import { DocumentCopyIcon } from "@/modules/shared/components/icons/document-copy"
-import { Button } from "@/modules/shared/components/ui/button"
+import type { User } from "@/modules/shared/domain/entities/user"
 import { motion } from "framer-motion"
 import { BackButton } from "./back-button"
+import { CategoryActionButton } from "./category-action-button"
 import { CategoryItemCard } from "./category-item-card"
 
 type CategoryDetailsProps = {
   category: CategoryWithStartedCategory
+  user: User
   onViewAll: () => void
   onBack: () => void
   showBackButton: boolean
@@ -17,6 +19,7 @@ type CategoryDetailsProps = {
 
 export function CategoryDetails({
   category,
+  user,
   onViewAll,
   onBack,
   showBackButton,
@@ -133,14 +136,7 @@ export function CategoryDetails({
         transition={{ duration: 0.3, delay: 0.2 }}
         className="bg-loops-background fixed right-0 bottom-0 left-0 px-6 py-4 shadow-lg"
       >
-        <Button
-          className="font-outfit text-loops-light hover:bg-loops-info bg-loops-cyan w-full rounded-xl py-7 text-lg leading-5 font-semibold capitalize shadow-none transition-all duration-200"
-          type="button"
-        >
-          {category.startedCategory !== undefined
-            ? "Continue Learning"
-            : "Start now"}
-        </Button>
+        <CategoryActionButton category={category} user={user} />
       </motion.div>
     </div>
   )

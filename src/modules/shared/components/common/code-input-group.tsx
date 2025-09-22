@@ -108,20 +108,20 @@ export function CodeInputGroup({ length = 5, onChange }: CodeInputGroupProps) {
 
   return (
     <div className="flex items-center justify-center gap-3">
-      {digits.map((digit, index) => (
-        <DigitInput
-          autoFocus={index === 0}
-          key={index}
-          onChange={(value) => handleDigitChange(index, value)}
-          onKeyDown={(e) => handleKeyDown(index, e)}
-          onPaste={handlePaste}
-          ref={(el) => {
-            inputRefs.current[index] = el
-          }}
-          value={digit}
-        />
-      ))}
-    </div>
+        {digits.map((digit, index) => (
+          <DigitInput
+            autoFocus={index === 0}
+            key={index}
+            onChange={(value) => handleDigitChange(index, value)}
+            onKeyDown={(e) => handleKeyDown(index, e)}
+            onPaste={handlePaste}
+            ref={(el) => {
+              inputRefs.current[index] = el
+            }}
+            value={digit}
+          />
+        ))}
+          </div>
   )
 }
 

@@ -40,13 +40,15 @@ export const getExploreSkillContentErrorsSchema = Schema.Union(
   userNotFoundErrorSchema,
 )
 
-export type GetExploreSkillContentErrors = typeof getExploreSkillContentErrorsSchema.Type
+export type GetExploreSkillContentErrors =
+  typeof getExploreSkillContentErrorsSchema.Type
 
 export const getExploreSkillContentSuccessSchema = Schema.Struct({
   skillContent: skillContentSchema,
 })
 
-export type GetExploreSkillContentSuccess = typeof getExploreSkillContentSuccessSchema.Type
+export type GetExploreSkillContentSuccess =
+  typeof getExploreSkillContentSuccessSchema.Type
 
 type GetExploreSkillContentResult = Effect.Effect<
   GetExploreSkillContentSuccess,
