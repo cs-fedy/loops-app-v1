@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-router"
 import appCss from "../styles/app.css?url"
 import type { RouterContext } from "@/router"
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@/modules/shared/components/ui/sonner"
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: function RootComponent() {

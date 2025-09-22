@@ -4,11 +4,11 @@ import json from "@eslint/json"
 import markdown from "@eslint/markdown"
 import { tanstackConfig } from "@tanstack/config/eslint"
 import pluginQuery from "@tanstack/eslint-plugin-query"
-import { defineConfig } from "eslint/config"
 import perfectionist from "eslint-plugin-perfectionist"
 import prettierConfigRecommended from "eslint-plugin-prettier/recommended"
 import pluginReact from "eslint-plugin-react"
 import pluginSecurity from "eslint-plugin-security"
+import { defineConfig } from "eslint/config"
 import globals from "globals"
 import tseslint from "typescript-eslint"
 
@@ -66,8 +66,8 @@ export default defineConfig([
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-require-imports": "warn",
       "@typescript-eslint/no-unused-vars": "off",
-      "perfectionist/sort-exports": "off",
-      "perfectionist/sort-imports": "off",
+      "perfectionist/sort-exports": "on",
+      "perfectionist/sort-imports": "on",
       "react/jsx-uses-react": "off",
       "react/react-in-jsx-scope": "off",
       semi: ["error", "never"],
