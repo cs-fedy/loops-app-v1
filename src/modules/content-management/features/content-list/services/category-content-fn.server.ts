@@ -2,11 +2,20 @@ import type { listExploreCategoryItemsErrorsSchema } from "@/modules/shared/api/
 import { listExploreCategoryItems } from "@/modules/shared/api/explore/category/list-explore-category-items"
 import type { getExploreQuizErrorsSchema } from "@/modules/shared/api/explore/quiz/get-explore-quiz"
 import { getExploreQuiz } from "@/modules/shared/api/explore/quiz/get-explore-quiz"
+import type { getStartedQuizErrorsSchema } from "@/modules/shared/api/explore/quiz/get-started-quiz"
+import { getStartedQuiz } from "@/modules/shared/api/explore/quiz/get-started-quiz"
+import type { getCompletedSkillErrorsSchema } from "@/modules/shared/api/explore/skill/get-completed-skill"
+import { getCompletedSkill } from "@/modules/shared/api/explore/skill/get-completed-skill"
 import type { getExploreSkillErrorsSchema } from "@/modules/shared/api/explore/skill/get-explore-skill"
 import { getExploreSkill } from "@/modules/shared/api/explore/skill/get-explore-skill"
+import type { getExploreSkillContentErrorsSchema } from "@/modules/shared/api/explore/skill/get-explore-skill-content"
+import { getExploreSkillContent } from "@/modules/shared/api/explore/skill/get-explore-skill-content"
 import type { CategoryItem } from "@/modules/shared/domain/entities/category-item"
+import type { CompletedSkill } from "@/modules/shared/domain/entities/completed-skill"
 import type { Quiz } from "@/modules/shared/domain/entities/quiz"
 import type { Skill } from "@/modules/shared/domain/entities/skill"
+import type { SkillContent } from "@/modules/shared/domain/entities/skill-content"
+import type { StartedQuiz } from "@/modules/shared/domain/entities/started-quiz"
 import type { unknownErrorSchema } from "@/modules/shared/utils/types"
 import { createServerFn } from "@tanstack/react-start"
 import { Cause, Effect, Option } from "effect"
@@ -17,6 +26,9 @@ export type CategoryContentErrors =
   | typeof listExploreCategoryItemsErrorsSchema.Type
   | typeof getExploreSkillErrorsSchema.Type
   | typeof getExploreQuizErrorsSchema.Type
+  | typeof getCompletedSkillErrorsSchema.Type
+  | typeof getStartedQuizErrorsSchema.Type
+  | typeof getExploreSkillContentErrorsSchema.Type
 
 export type CategoryContentItem = CategoryItem &
   (
@@ -24,11 +36,14 @@ export type CategoryContentItem = CategoryItem &
         itemType: "skills"
         content: Skill
         contentType: "skills"
+        completedSkill?: CompletedSkill
+        skillContent?: SkillContent
       }
     | {
         itemType: "quizzes"
         content: Quiz
         contentType: "quizzes"
+        startedQuiz?: StartedQuiz
       }
   )
 
@@ -72,7 +87,7 @@ const fetchCategoryContentEffect = (params: CategoryContentParams) =>
 
     const { categoryItems } = categoryItemsExit.value
 
-    // 2) For each category item, fetch the associated content (skill or quiz)
+    // 2) For each category item, fetch the associated content (skill or quiz) and optional status
     const categoryContentItems: CategoryContentItem[] = []
 
     for (const categoryItem of categoryItems) {
@@ -87,10 +102,44 @@ const fetchCategoryContentEffect = (params: CategoryContentParams) =>
         )
 
         if (skillExit._tag === "Success") {
+          // Try to fetch completed skill status (optional)
+          const completedSkillExit = yield* Effect.promise(() =>
+            Effect.runPromiseExit(
+              getCompletedSkill({
+                categoryId,
+                skillId: categoryItem.itemId,
+              }),
+            ),
+          )
+
+          const completedSkill =
+            completedSkillExit._tag === "Success"
+              ? completedSkillExit.value.completedSkill
+              : undefined
+
+          // Fetch skill content if completedSkill exists
+          let skillContent: SkillContent | undefined = undefined
+          if (completedSkill) {
+            const skillContentExit = yield* Effect.promise(() =>
+              Effect.runPromiseExit(
+                getExploreSkillContent({
+                  categoryId,
+                  skillId: categoryItem.itemId,
+                }),
+              ),
+            )
+
+            if (skillContentExit._tag === "Success") {
+              skillContent = skillContentExit.value.skillContent
+            }
+          }
+
           categoryContentItems.push({
             ...categoryItem,
             content: skillExit.value.skill,
             contentType: "skills" as const,
+            completedSkill,
+            skillContent,
           } as CategoryContentItem)
         }
       } else if (categoryItem.itemType === "quizzes") {
@@ -104,10 +153,26 @@ const fetchCategoryContentEffect = (params: CategoryContentParams) =>
         )
 
         if (quizExit._tag === "Success") {
+          // Try to fetch started quiz status (optional)
+          const startedQuizExit = yield* Effect.promise(() =>
+            Effect.runPromiseExit(
+              getStartedQuiz({
+                categoryId,
+                quizId: categoryItem.itemId,
+              }),
+            ),
+          )
+
+          const startedQuiz =
+            startedQuizExit._tag === "Success"
+              ? startedQuizExit.value.startedQuiz
+              : undefined
+
           categoryContentItems.push({
             ...categoryItem,
             content: quizExit.value.quiz,
             contentType: "quizzes" as const,
+            startedQuiz,
           } as CategoryContentItem)
         }
       }
