@@ -4,12 +4,12 @@ import { invalidExpiredTokenErrorSchema } from "@/modules/shared/domain/errors/i
 import { invalidExpiredVoucherErrorSchema } from "@/modules/shared/domain/errors/invalid-expired-voucher"
 import { userNotFoundErrorSchema } from "@/modules/shared/domain/errors/user-not-found"
 import { voucherNotFoundErrorSchema } from "@/modules/shared/domain/errors/voucher-not-found"
+import { successMessageWithPayloadSchemaFactory } from "@/modules/shared/domain/types/success-message"
 import { invalidInputFactory } from "@/modules/shared/domain/utils/invalid-input"
 import { instance } from "@/modules/shared/utils/axios"
 import { parseApiResponse } from "@/modules/shared/utils/parse-api-response"
 import { parseEffectSchema } from "@/modules/shared/utils/parse-effect-schema"
-import type { Effect } from "effect"
-import { Schema } from "effect"
+import { Effect, Schema } from "effect"
 
 const submitVoucherArgsSchema = Schema.Struct({
   categoryId: Schema.String,
@@ -37,10 +37,13 @@ export const submitVoucherErrorsSchema = Schema.Union(
 
 export type SubmitVoucherErrors = typeof submitVoucherErrorsSchema.Type
 
-export const submitVoucherSuccessSchema = Schema.Struct({
-  categoryId: Schema.String,
-  userId: Schema.String,
-})
+export const submitVoucherSuccessSchema =
+  successMessageWithPayloadSchemaFactory(
+    Schema.Struct({
+      categoryId: Schema.String,
+      userId: Schema.String,
+    }),
+  )
 
 export type SubmitVoucherSuccess = typeof submitVoucherSuccessSchema.Type
 

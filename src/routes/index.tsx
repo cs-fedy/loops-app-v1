@@ -17,9 +17,9 @@ const authenticatedQuery = queryOptions({
 const searchParamsSchema = z.object({
   category: z
     .string()
-    .optional()
-    .transform((value) => (value === undefined ? "all" : value)),
-  details: z.coerce.boolean().optional().default(false),
+    .refine((value) => value === "all" || /^[0-9a-fA-F]{24}$/.test(value))
+    .optional(),
+  details: z.coerce.boolean().optional(),
 })
 
 export const Route = createFileRoute("/")({

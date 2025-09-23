@@ -30,10 +30,9 @@ export function VoucherSubmissionForm({
         if (response._tag === "Failure") {
           if (response.error.code === "invalid_input")
             return { voucherCode: response.error.payload.code }
+          error("Invalid voucher code. Please check and try again.")
         }
 
-        error("Invalid voucher code. Please check and try again.")
-        // Success - call the onSuccess callback
         onSuccess()
       },
     },

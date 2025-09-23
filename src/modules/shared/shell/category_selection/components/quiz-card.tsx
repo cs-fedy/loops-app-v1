@@ -12,7 +12,6 @@ type QuizCardProps = {
   index: number
   progressState: ProgressState
   progress: number
-  onClick?: () => void
 }
 
 export function QuizCard({
@@ -20,7 +19,6 @@ export function QuizCard({
   index,
   progressState,
   progress,
-  onClick,
 }: QuizCardProps) {
   return (
     <motion.button
@@ -33,8 +31,6 @@ export function QuizCard({
         progressState !== "locked" && "hover:bg-[#1a1a45]",
         progressState === "locked" && "opacity-60",
       )}
-      onClick={progressState !== "locked" ? onClick : undefined}
-      disabled={progressState === "locked"}
     >
       <div className="flex items-center justify-between">
         <div className="flex-1">

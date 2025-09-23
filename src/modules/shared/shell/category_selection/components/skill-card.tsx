@@ -9,7 +9,6 @@ type SkillCardProps = {
   index: number
   progressState: ProgressState
   progress: number
-  onClick?: () => void
 }
 
 export function SkillCard({
@@ -17,7 +16,6 @@ export function SkillCard({
   index,
   progressState,
   progress,
-  onClick,
 }: SkillCardProps) {
   return (
     <motion.button
@@ -30,8 +28,6 @@ export function SkillCard({
         progressState !== "locked" && "hover:bg-[#1a1a45]",
         progressState === "locked" && "opacity-60",
       )}
-      onClick={progressState !== "locked" ? onClick : undefined}
-      disabled={progressState === "locked"}
     >
       <div className="flex items-center justify-between">
         <div className="flex flex-col items-start gap-y-2">

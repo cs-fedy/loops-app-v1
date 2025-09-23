@@ -8,8 +8,8 @@ type HomeShellProps = {
   target: ReactNode
   user: User
   searchParams: {
-    category: string
-    details: boolean
+    category?: string | undefined
+    details?: boolean | undefined
   }
 }
 

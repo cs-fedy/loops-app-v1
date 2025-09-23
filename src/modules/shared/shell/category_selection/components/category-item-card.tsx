@@ -6,14 +6,9 @@ import { SkillCard } from "./skill-card"
 type CategoryItemCardProps = {
   item: CategoryContentItem
   index: number
-  onClick: () => void
 }
 
-export function CategoryItemCard({
-  item,
-  index,
-  onClick,
-}: CategoryItemCardProps) {
+export function CategoryItemCard({ item, index }: CategoryItemCardProps) {
   const getProgressState = (): ProgressState => {
     if (item.contentType === "skills") {
       if (item.completedSkill?.isCompleted) return "completed"
@@ -56,7 +51,6 @@ export function CategoryItemCard({
         index={index}
         progressState={progressState}
         progress={progress}
-        onClick={onClick}
       />
     )
   }
@@ -67,7 +61,6 @@ export function CategoryItemCard({
       index={index}
       progressState={progressState}
       progress={progress}
-      onClick={onClick}
     />
   )
 }

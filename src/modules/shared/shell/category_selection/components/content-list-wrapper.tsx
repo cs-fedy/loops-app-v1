@@ -5,14 +5,12 @@ type ContentListWrapperProps = {
   categoryId: string
   onBack: () => void
   showBackButton: boolean
-  onItemClick?: (itemId: string) => void
 }
 
 export function ContentListWrapper({
   categoryId,
   onBack,
   showBackButton,
-  onItemClick,
 }: ContentListWrapperProps) {
   const { category } = useExploreCategory({ categoryId })
 
@@ -21,7 +19,6 @@ export function ContentListWrapper({
       category={category}
       onBack={onBack}
       showBackButton={showBackButton}
-      {...(onItemClick && { onItemClick })}
     />
   )
 }

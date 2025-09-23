@@ -115,7 +115,6 @@ export function CategoryDetails({
             <div className="space-y-4">
               {categoryItems.map((item, index) => (
                 <CategoryItemCard
-                  onClick={() => {}}
                   key={item.categoryItemId}
                   item={item}
                   index={index}

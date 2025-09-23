@@ -8,22 +8,16 @@ type ContentListProps = {
   category: CategoryWithStartedCategory
   onBack: () => void
   showBackButton: boolean
-  onItemClick?: (itemId: string) => void
 }
 
 export function ContentList({
   category,
   onBack,
   showBackButton,
-  onItemClick,
 }: ContentListProps) {
   const { categoryItems } = useCategoryContent({
     categoryId: category.categoryId,
   })
-
-  const handleItemClick = (itemId: string) => {
-    onItemClick?.(itemId)
-  }
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -95,11 +89,7 @@ export function ContentList({
                 transition: { duration: 0.1, ease: "easeInOut" },
               }}
             >
-              <CategoryItemCard
-                item={item}
-                index={index}
-                onClick={() => handleItemClick(item.itemId)}
-              />
+              <CategoryItemCard item={item} index={index} />
             </motion.div>
           ))}
         </motion.div>
