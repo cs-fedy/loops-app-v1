@@ -1,9 +1,13 @@
+import { HomeScreen } from "@/modules/content-management/features/home/components/home-screen"
+import { HomeSkeleton } from "@/modules/shared/components/common/home-skeleton"
+import { BottomTabNavigator } from "@/modules/shared/components/navigation/bottom-tab-navigator"
 import { isAuthenticated } from "@/modules/shared/guards/is-authenticated"
 import { HomeShell } from "@/modules/shared/shell/home/home-shell"
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute, redirect } from "@tanstack/react-router"
 import { zodValidator } from "@tanstack/zod-adapter"
-import z from "zod"
+import { Suspense } from "react"
+import { z } from "zod"
 
 const authenticatedQuery = queryOptions({
   queryFn: async () => {
@@ -36,15 +40,13 @@ export const Route = createFileRoute("/")({
     return (
       <HomeShell
         target={
-          <div className="bg-loops-background h-screen w-screen px-4 py-6">
-            <div className="flex size-full flex-col items-center justify-center gap-y-10">
-              <h1 className="font-outfit text-loops-cyan text-center text-3xl leading-5 font-bold tracking-tight break-words">
-                Welcome Home!
-              </h1>
-              <p className="font-outfit text-loops-white text-center text-base leading-6 font-normal">
-                You&apos;re all set up and ready to start coding.
-              </p>
-            </div>
+          <div className="relative min-h-screen">
+            {user.currentCategory && (
+              <Suspense fallback={<HomeSkeleton />}>
+                <HomeScreen categoryId={user.currentCategory} />
+              </Suspense>
+            )}
+            <BottomTabNavigator />
           </div>
         }
         user={user}

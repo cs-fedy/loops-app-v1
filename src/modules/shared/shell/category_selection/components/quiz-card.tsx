@@ -4,7 +4,7 @@ import { ClockIcon } from "@/modules/shared/components/icons/clock"
 import { cn } from "@/modules/shared/lib/utils"
 import { formatTimeDuration } from "@/modules/shared/utils/format-duration"
 import { ProgressState } from "@/modules/shared/utils/types"
-import { motion } from "motion/react"
+import { motion } from "framer-motion"
 import { ProgressCircle } from "./progress-circle"
 
 type QuizCardProps = {

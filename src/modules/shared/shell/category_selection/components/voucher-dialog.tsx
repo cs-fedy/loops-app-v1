@@ -10,13 +10,21 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useRef, useState } from "react"
 import { VoucherSubmissionForm } from "./voucher-submission-form"
 
-type VoucherDialogProps = { categoryId: string }
-export function VoucherDialog({ categoryId }: VoucherDialogProps) {
-  const [open, setOpen] = useState(false)
+type VoucherDialogProps = { 
+  categoryId: string
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+}
+export function VoucherDialog({ categoryId, open: externalOpen, onOpenChange }: VoucherDialogProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
   const triggerRef = useRef<HTMLButtonElement>(null)
 
+  // Use external open state if provided, otherwise use internal state
+  const open = externalOpen !== undefined ? externalOpen : internalOpen
+  const setOpen = onOpenChange || setInternalOpen
+
   return (
-    <Dialog open={open} onOpenChange={() => setOpen((prev) => !prev)}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild ref={triggerRef}>
         <Button className="font-outfit text-loops-light hover:bg-loops-info bg-loops-cyan w-full rounded-xl py-7 text-lg leading-5 font-semibold capitalize shadow-none transition-all duration-200">
           Start now

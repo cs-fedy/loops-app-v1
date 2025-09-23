@@ -1,4 +1,4 @@
-import { motion } from "motion/react"
+import { motion } from "framer-motion"
 
 export function CategoryDetailsSkeleton() {
   return (
@@ -54,7 +54,7 @@ export function CategoryDetailsSkeleton() {
 
           {/* Description Skeleton */}
           <div className="space-y-2">
-            {['w-full', 'w-3/4', 'w-1/2'].map((width, index) => (
+            {["w-full", "w-3/4", "w-1/2"].map((width, index) => (
               <div
                 key={index}
                 className={`h-4 ${width} rounded bg-gradient-to-r from-slate-700/40 to-slate-600/20`}

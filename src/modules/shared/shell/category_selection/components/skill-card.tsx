@@ -1,7 +1,7 @@
 import { CategoryContentItem } from "@/modules/content-management/features/content-list/services/category-content-fn.server"
 import { cn } from "@/modules/shared/lib/utils"
 import { ProgressState } from "@/modules/shared/utils/types"
-import { motion } from "motion/react"
+import { motion } from "framer-motion"
 import { ProgressCircle } from "./progress-circle"
 
 type SkillCardProps = {

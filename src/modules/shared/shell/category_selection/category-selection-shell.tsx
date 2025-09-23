@@ -16,8 +16,8 @@ import { ContentListWrapper } from "./components/content-list-wrapper"
 
 type CategorySelectionShellProps = {
   searchParams: {
-    category?: string | undefined
-    details?: boolean | undefined
+    category: string
+    details: boolean
   }
   target: ReactNode
   user: User
@@ -40,16 +40,16 @@ export function CategorySelectionShell({
   }, [searchParams])
 
   if (isLoading) return <LoadingScreen />
+  if (!user.currentCategory || searchParams.category)
+    return (
+      <div className="bg-loops-background flex h-screen w-screen flex-col">
+        <Suspense fallback={getSkeleton()}>
+          <CategorySelectionScreen searchParams={searchParams} user={user} />
+        </Suspense>
+      </div>
+    )
 
-  if (user.currentCategory && !searchParams.category) return target
-
-  return (
-    <div className="bg-loops-background flex h-screen w-screen flex-col">
-      <Suspense fallback={getSkeleton()}>
-        <CategorySelectionScreen searchParams={searchParams} user={user} />
-      </Suspense>
-    </div>
-  )
+  return target
 }
 
 function CategorySelectionScreen({
@@ -57,8 +57,8 @@ function CategorySelectionScreen({
   user,
 }: {
   searchParams: {
-    category?: string | undefined
-    details?: boolean | undefined
+    category: string
+    details: boolean
   }
   user: User
 }) {
@@ -67,6 +67,7 @@ function CategorySelectionScreen({
 
   // Determine current screen based on URL parameters
   const getCurrentScreen = () => {
+    if (searchParams.category === "all") return "categories"
     if (searchParams.category !== "all" && !searchParams.details)
       return "category-details"
     if (searchParams.category !== "all" && searchParams.details)
@@ -135,7 +136,7 @@ function CategorySelectionScreen({
 
   return (
     <div className="relative flex-1 overflow-hidden">
-      {searchParams.category === "all" && (
+      {currentScreen === "categories" && (
         <CategoriesList
           categories={categories}
           onCategorySelect={handleCategorySelect}
@@ -144,9 +145,7 @@ function CategorySelectionScreen({
         />
       )}
 
-      {searchParams.category &&
-        searchParams.category !== "all" &&
-        !searchParams.details &&
+      {currentScreen === "category-details" &&
         (() => {
           // Try to find the category in cached categories first
           const cachedCategory = categories.find(
@@ -176,9 +175,7 @@ function CategorySelectionScreen({
           )
         })()}
 
-      {searchParams.category &&
-        searchParams.category !== "all" &&
-        searchParams.details &&
+      {currentScreen === "content-list" &&
         (() => {
           // Try to find the category in cached categories first
           const cachedCategory = categories.find(

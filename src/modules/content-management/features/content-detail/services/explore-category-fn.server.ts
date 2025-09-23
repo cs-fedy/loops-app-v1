@@ -65,6 +65,7 @@ const fetchExploreCategoryEffect = (params: ExploreCategoryParams) =>
       categoryWithStartedData.startedCategory =
         startedCategoryExit.value.startedCategory
     }
+
     // If it fails with category_not_started, that's expected - category not started yet
     // If it fails with other errors, we still include the category without started data
 

@@ -2,9 +2,9 @@ import type { PropsWithChildren } from "react"
 
 export function SpaceBackground({ children }: PropsWithChildren) {
   return (
-    <div className="bg-loops-background relative h-screen w-screen px-4 py-6">
+    <div className="bg-loops-background relative min-h-screen w-full">
       <svg
-        className="fixed z-0 size-full"
+        className="fixed inset-0 z-0 size-full"
         fill="none"
         viewBox="0 0 390 820"
         xmlns="http://www.w3.org/2000/svg"
@@ -1343,7 +1343,9 @@ export function SpaceBackground({ children }: PropsWithChildren) {
           fillOpacity={0.6}
         />
       </svg>
-      <div className="relative z-10 size-full">{children}</div>
+      <div className="relative z-10 min-h-screen w-full px-4 py-6">
+        {children}
+      </div>
     </div>
   )
 }
