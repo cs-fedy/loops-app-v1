@@ -42,11 +42,15 @@ export const Route = createFileRoute("/")({
         target={
           <div className="relative min-h-screen">
             {user.currentCategory && (
-              <Suspense fallback={<HomeSkeleton />}>
-                <HomeScreen categoryId={user.currentCategory} />
-              </Suspense>
+              <div className="relative z-0">
+                <Suspense fallback={<HomeSkeleton />}>
+                  <HomeScreen categoryId={user.currentCategory} />
+                </Suspense>
+              </div>
             )}
-            <BottomTabNavigator />
+            <div className="fixed right-0 bottom-0 left-0 z-10">
+              <BottomTabNavigator />
+            </div>
           </div>
         }
         user={user}
