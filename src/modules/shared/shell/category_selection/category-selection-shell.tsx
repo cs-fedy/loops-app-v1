@@ -16,8 +16,8 @@ import { ContentListWrapper } from "./components/content-list-wrapper"
 
 type CategorySelectionShellProps = {
   searchParams: {
-    category: string
-    details: boolean
+    category?: string | undefined
+    details?: boolean | undefined
   }
   target: ReactNode
   user: User
@@ -57,25 +57,13 @@ function CategorySelectionScreen({
   user,
 }: {
   searchParams: {
-    category: string
-    details: boolean
+    category?: string | undefined
+    details?: boolean | undefined
   }
   user: User
 }) {
   const navigate = useNavigate()
   const { categories } = useExploreCategories()
-
-  // Determine current screen based on URL parameters
-  const getCurrentScreen = () => {
-    if (searchParams.category === "all") return "categories"
-    if (searchParams.category !== "all" && !searchParams.details)
-      return "category-details"
-    if (searchParams.category !== "all" && searchParams.details)
-      return "content-list"
-    return "categories"
-  }
-
-  const currentScreen = getCurrentScreen()
 
   const handleBackNavigation = () => {
     // Hide back button - no navigation should occur
@@ -136,7 +124,7 @@ function CategorySelectionScreen({
 
   return (
     <div className="relative flex-1 overflow-hidden">
-      {currentScreen === "categories" && (
+      {searchParams.category === "all" && (
         <CategoriesList
           categories={categories}
           onCategorySelect={handleCategorySelect}
@@ -145,7 +133,9 @@ function CategorySelectionScreen({
         />
       )}
 
-      {currentScreen === "category-details" &&
+      {searchParams.category &&
+        searchParams.category !== "all" &&
+        !searchParams.details &&
         (() => {
           // Try to find the category in cached categories first
           const cachedCategory = categories.find(
@@ -175,7 +165,9 @@ function CategorySelectionScreen({
           )
         })()}
 
-      {currentScreen === "content-list" &&
+      {searchParams.category &&
+        searchParams.category !== "all" &&
+        searchParams.details &&
         (() => {
           // Try to find the category in cached categories first
           const cachedCategory = categories.find(

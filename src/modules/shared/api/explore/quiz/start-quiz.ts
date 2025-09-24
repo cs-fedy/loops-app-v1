@@ -1,11 +1,11 @@
-import { startedQuizSchema } from "@/modules/shared/domain/entities/started-quiz"
 import { categoryNotFoundErrorSchema } from "@/modules/shared/domain/errors/category-not-found"
 import { categoryNotStartedErrorSchema } from "@/modules/shared/domain/errors/category-not-started"
 import { invalidExpiredTokenErrorSchema } from "@/modules/shared/domain/errors/invalid-expired-token"
-import { notCategoryItemErrorSchema } from "@/modules/shared/domain/errors/not-category-item"
+import { previousQuizNotCompletedErrorSchema } from "@/modules/shared/domain/errors/previous-quiz-not-completed"
+import { quizAlreadyStartedErrorSchema } from "@/modules/shared/domain/errors/quiz-already-started"
 import { quizNotFoundErrorSchema } from "@/modules/shared/domain/errors/quiz-not-found"
-import { quizNotStartedErrorSchema } from "@/modules/shared/domain/errors/quiz-not-started"
 import { userNotFoundErrorSchema } from "@/modules/shared/domain/errors/user-not-found"
+import { successMessageSchema } from "@/modules/shared/domain/types/success-message"
 import { invalidInputFactory } from "@/modules/shared/domain/utils/invalid-input"
 import { instance } from "@/modules/shared/utils/axios"
 import { parseApiResponse } from "@/modules/shared/utils/parse-api-response"
@@ -13,14 +13,14 @@ import { parseEffectSchema } from "@/modules/shared/utils/parse-effect-schema"
 import type { Effect } from "effect"
 import { Schema } from "effect"
 
-const getStartedQuizArgsSchema = Schema.Struct({
+const startQuizArgsSchema = Schema.Struct({
   categoryId: Schema.String,
   quizId: Schema.String,
 })
 
-type GetStartedQuizArgs = typeof getStartedQuizArgsSchema.Type
+type StartQuizArgs = typeof startQuizArgsSchema.Type
 
-export const getStartedQuizErrorsSchema = Schema.Union(
+export const startQuizErrorsSchema = Schema.Union(
   invalidInputFactory(
     Schema.Struct({
       authorization: Schema.optional(Schema.String),
@@ -29,48 +29,43 @@ export const getStartedQuizErrorsSchema = Schema.Union(
       quizId: Schema.optional(Schema.String),
     }),
   ),
+  quizAlreadyStartedErrorSchema,
+  previousQuizNotCompletedErrorSchema,
   quizNotFoundErrorSchema,
-  notCategoryItemErrorSchema,
-  quizNotStartedErrorSchema,
   categoryNotFoundErrorSchema,
   categoryNotStartedErrorSchema,
   invalidExpiredTokenErrorSchema,
   userNotFoundErrorSchema,
 )
 
-export type GetStartedQuizErrors = typeof getStartedQuizErrorsSchema.Type
+export type StartQuizErrors = typeof startQuizErrorsSchema.Type
 
-export const getStartedQuizSuccessSchema = Schema.Struct({
-  startedQuiz: startedQuizSchema,
-})
+export const startQuizSuccessSchema = successMessageSchema
 
-export type GetStartedQuizSuccess = typeof getStartedQuizSuccessSchema.Type
+export type StartQuizSuccess = typeof startQuizSuccessSchema.Type
 
-type GetStartedQuizResult = Effect.Effect<
-  GetStartedQuizSuccess,
-  GetStartedQuizErrors
->
+type StartQuizResult = Effect.Effect<StartQuizSuccess, StartQuizErrors>
 
-export const getStartedQuizExitSchema = Schema.Exit({
+export const startQuizExitSchema = Schema.Exit({
   defect: Schema.String,
-  failure: getStartedQuizErrorsSchema,
-  success: getStartedQuizSuccessSchema,
+  failure: startQuizErrorsSchema,
+  success: startQuizSuccessSchema,
 })
 
-export function getStartedQuiz(args: GetStartedQuizArgs): GetStartedQuizResult {
-  const parsedArgs = parseEffectSchema(getStartedQuizArgsSchema, args)
+export function startQuiz(args: StartQuizArgs): StartQuizResult {
+  const parsedArgs = parseEffectSchema(startQuizArgsSchema, args)
   const url = `/explore/categories/${parsedArgs.categoryId}/quizzes/${parsedArgs.quizId}/started`
-  const response = instance.get(url)
+  const response = instance.post(url)
 
   return parseApiResponse({
     error: {
-      name: "GetStartedQuizErrors",
-      schema: getStartedQuizErrorsSchema,
+      name: "StartQuizErrors",
+      schema: startQuizErrorsSchema,
     },
-    name: "GetStartedQuiz",
+    name: "StartQuiz",
     success: {
-      name: "GetStartedQuizSuccess",
-      schema: getStartedQuizSuccessSchema,
+      name: "StartQuizSuccess",
+      schema: startQuizSuccessSchema,
     },
   })(response)
 }

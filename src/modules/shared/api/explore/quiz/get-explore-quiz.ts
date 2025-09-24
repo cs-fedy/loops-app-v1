@@ -1,7 +1,7 @@
 import { quizSchema } from "@/modules/shared/domain/entities/quiz"
 import { categoryNotFoundErrorSchema } from "@/modules/shared/domain/errors/category-not-found"
 import { invalidExpiredTokenErrorSchema } from "@/modules/shared/domain/errors/invalid-expired-token"
-import { quizNotCategoryItemErrorSchema } from "@/modules/shared/domain/errors/quiz-not-category-item"
+import { notCategoryItemErrorSchema } from "@/modules/shared/domain/errors/not-category-item"
 import { quizNotFoundErrorSchema } from "@/modules/shared/domain/errors/quiz-not-found"
 import { userNotFoundErrorSchema } from "@/modules/shared/domain/errors/user-not-found"
 import { invalidInputFactory } from "@/modules/shared/domain/utils/invalid-input"
@@ -28,7 +28,7 @@ export const getExploreQuizErrorsSchema = Schema.Union(
     }),
   ),
   quizNotFoundErrorSchema,
-  quizNotCategoryItemErrorSchema,
+  notCategoryItemErrorSchema,
   categoryNotFoundErrorSchema,
   invalidExpiredTokenErrorSchema,
   userNotFoundErrorSchema,

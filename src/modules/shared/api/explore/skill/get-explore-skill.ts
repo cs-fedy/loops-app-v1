@@ -1,7 +1,7 @@
 import { skillSchema } from "@/modules/shared/domain/entities/skill"
 import { categoryNotFoundErrorSchema } from "@/modules/shared/domain/errors/category-not-found"
 import { invalidExpiredTokenErrorSchema } from "@/modules/shared/domain/errors/invalid-expired-token"
-import { skillNotCategoryItemErrorSchema } from "@/modules/shared/domain/errors/skill-not-category-item"
+import { notCategoryItemErrorSchema } from "@/modules/shared/domain/errors/not-category-item"
 import { skillNotFoundErrorSchema } from "@/modules/shared/domain/errors/skill-not-found"
 import { userNotFoundErrorSchema } from "@/modules/shared/domain/errors/user-not-found"
 import { invalidInputFactory } from "@/modules/shared/domain/utils/invalid-input"
@@ -28,7 +28,7 @@ export const getExploreSkillErrorsSchema = Schema.Union(
     }),
   ),
   skillNotFoundErrorSchema,
-  skillNotCategoryItemErrorSchema,
+  notCategoryItemErrorSchema,
   categoryNotFoundErrorSchema,
   invalidExpiredTokenErrorSchema,
   userNotFoundErrorSchema,
