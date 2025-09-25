@@ -1,31 +1,47 @@
+import { CategoryContentItem } from "@/modules/shared/domain/entities/category-content-item"
 import { useMemo } from "react"
-import { CategoryContentItem } from "../../content-list/services/category-content-fn.server"
 import { CategoryItemCircle } from "./category-item-circle"
 import { CategoryMappingProps } from "./types"
 
-export function CategoryMapping({ categoryItems }: CategoryMappingProps) {
+export function CategoryMapping({
+  categoryItems,
+  categoryId,
+}: CategoryMappingProps) {
   const renderRow = (items: Array<CategoryContentItem>, rowIndex: number) => {
     const isOddRow = rowIndex % 2 === 0
 
-    if (isOddRow)
+    if (isOddRow) {
+      const itemIndex = categoryItems.indexOf(items[0])
+      const previousItems = categoryItems.slice(0, itemIndex)
+
       return (
         <div key={`row-${rowIndex}`} className="flex justify-center">
           <CategoryItemCircle
             item={items[0]}
-            index={categoryItems.indexOf(items[0])}
+            index={itemIndex}
+            categoryId={categoryId}
+            previousItems={previousItems}
           />
         </div>
       )
+    }
 
     return (
       <div key={`row-${rowIndex}`} className="flex justify-center gap-8">
-        {items.map((item, itemIndex) => (
-          <CategoryItemCircle
-            item={item}
-            key={`row-${rowIndex}-column-${itemIndex}`}
-            index={categoryItems.indexOf(item)}
-          />
-        ))}
+        {items.map((item, itemIndex) => {
+          const globalIndex = categoryItems.indexOf(item)
+          const previousItems = categoryItems.slice(0, globalIndex)
+
+          return (
+            <CategoryItemCircle
+              item={item}
+              key={`row-${rowIndex}-column-${itemIndex}`}
+              index={globalIndex}
+              categoryId={categoryId}
+              previousItems={previousItems}
+            />
+          )
+        })}
       </div>
     )
   }
@@ -58,6 +74,8 @@ export function CategoryMapping({ categoryItems }: CategoryMappingProps) {
       [] as Array<Array<CategoryContentItem>>,
     )
   }, [categoryItems])
+
+  // TODO: use tanstack virtual here
 
   return (
     <div className="mb-24 flex flex-col items-center space-y-6">

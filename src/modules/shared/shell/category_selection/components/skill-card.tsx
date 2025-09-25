@@ -1,4 +1,4 @@
-import { CategoryContentItem } from "@/modules/content-management/features/content-list/services/category-content-fn.server"
+import { CategoryContentItem } from "@/modules/shared/domain/entities/category-content-item"
 import { cn } from "@/modules/shared/lib/utils"
 import { ProgressState } from "@/modules/shared/utils/types"
 import { motion } from "framer-motion"

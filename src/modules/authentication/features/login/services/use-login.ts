@@ -1,13 +1,13 @@
 // src/hooks/useLogin.ts
-import { useCallback } from "react"
+import { useRouter } from "@tanstack/react-router"
 import { useServerFn } from "@tanstack/react-start"
-import { useNavigate } from "@tanstack/react-router"
-import { loginFn } from "./login-fn.server"
+import { useCallback } from "react"
 import type { LoginWire } from "./login-fn.server"
+import { loginFn } from "./login-fn.server"
 
 export function useLogin() {
   const logUser = useServerFn(loginFn)
-  const navigate = useNavigate()
+  const router = useRouter()
 
   const handleLogin = useCallback(
     async (username: string, password: string) => {
@@ -19,12 +19,12 @@ export function useLogin() {
       // No runtime decode on client. If you still want runtime checks,
       // you can add a tiny inline type guard here.
       if (response._tag === "Success") {
-        await navigate({ to: "/" })
+        await router.navigate({ to: "/" })
       }
 
       return response
     },
-    [logUser, navigate],
+    [logUser, router],
   )
 
   return { handleLogin }

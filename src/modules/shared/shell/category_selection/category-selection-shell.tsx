@@ -6,7 +6,7 @@ import { ContentSkeleton } from "@/modules/shared/components/common/content-skel
 import { LoadingScreen } from "@/modules/shared/components/common/loading-screen"
 import type { User } from "@/modules/shared/domain/entities/user"
 import { usePageLoading } from "@/modules/shared/hooks/use-page-loading"
-import { useNavigate } from "@tanstack/react-router"
+import { useRouter } from "@tanstack/react-router"
 import { Suspense, useCallback, type ReactNode } from "react"
 import { CategoriesList } from "./components/categories-list"
 import { CategoryDetails } from "./components/category-details"
@@ -17,7 +17,8 @@ import { ContentListWrapper } from "./components/content-list-wrapper"
 type CategorySelectionShellProps = {
   searchParams: {
     category?: string | undefined
-    details?: boolean | undefined
+    type?: "details" | "content" | undefined
+    contentId?: string | undefined
   }
   target: ReactNode
   user: User
@@ -32,15 +33,27 @@ export function CategorySelectionShell({
 
   const getSkeleton = useCallback(() => {
     if (searchParams.category === "all") return <CategoriesListSkeleton />
-    if (searchParams.category !== "all" && !searchParams.details)
+    if (searchParams.category !== "all" && searchParams.type === "details")
       return <CategoryDetailsSkeleton />
-    if (searchParams.category !== "all" && searchParams.details)
+    if (searchParams.category !== "all" && searchParams.type === "content")
       return <ContentSkeleton />
     return <CategoriesListSkeleton />
   }, [searchParams])
 
   if (isLoading) return <LoadingScreen />
-  if (!user.currentCategory || searchParams.category)
+
+  const noCurrentCategory = !user.currentCategory
+  const isCategoryPage = searchParams.category !== undefined
+  const isCategoryItemPage =
+    searchParams.category &&
+    searchParams.category !== "all" &&
+    searchParams.type === "content" &&
+    searchParams.contentId !== undefined
+
+  const validCategorySelectionScreens =
+    noCurrentCategory || (isCategoryPage && !isCategoryItemPage)
+
+  if (validCategorySelectionScreens)
     return (
       <div className="bg-loops-background flex h-screen w-screen flex-col">
         <Suspense fallback={getSkeleton()}>
@@ -62,7 +75,7 @@ function CategorySelectionScreen({
   }
   user: User
 }) {
-  const navigate = useNavigate()
+  const router = useRouter()
   const { categories } = useExploreCategories()
 
   const handleBackNavigation = () => {
@@ -72,16 +85,16 @@ function CategorySelectionScreen({
 
     // Navigate to root path
     if (searchParams.category === "all" && user.currentCategory !== undefined)
-      navigate({ to: "/" })
+      router.navigate({ to: "/" })
     // Going back from content details to category details
     else if (searchParams.category !== "all" && searchParams.details)
-      navigate({
+      router.navigate({
         to: "/",
         search: (prev: any) => ({ ...prev, details: false }),
       })
     // Going back from category details to categories list
     else if (searchParams.category !== "all" && !searchParams.details)
-      navigate({
+      router.navigate({
         to: "/",
         search: (prev: any) => {
           const { category, details, ...rest } = prev
@@ -100,8 +113,8 @@ function CategorySelectionScreen({
     return true
   }
 
-  const handleCategorySelect = (category: CategoryWithStartedCategory) => {
-    navigate({
+  const handleCategorySelect = (category: CategoryWithStartedCategory) =>
+    router.navigate({
       to: "/",
       search: (prev: any) => ({
         ...prev,
@@ -109,10 +122,9 @@ function CategorySelectionScreen({
         details: false,
       }),
     })
-  }
 
-  const handleViewAllContent = (category: CategoryWithStartedCategory) => {
-    navigate({
+  const handleViewAllContent = (category: CategoryWithStartedCategory) =>
+    router.navigate({
       to: "/",
       search: (prev: any) => ({
         ...prev,
@@ -120,7 +132,6 @@ function CategorySelectionScreen({
         details: true,
       }),
     })
-  }
 
   return (
     <div className="relative flex-1 overflow-hidden">

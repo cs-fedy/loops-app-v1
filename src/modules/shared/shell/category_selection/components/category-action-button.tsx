@@ -2,7 +2,7 @@ import type { CategoryWithStartedCategory } from "@/modules/content-management/f
 import { Button } from "@/modules/shared/components/ui/button"
 import type { User } from "@/modules/shared/domain/entities/user"
 import { useQueryClient } from "@tanstack/react-query"
-import { useNavigate } from "@tanstack/react-router"
+import { useRouter } from "@tanstack/react-router"
 import { VoucherDialog } from "./voucher-dialog"
 
 type CategoryActionButtonProps = {
@@ -15,12 +15,12 @@ export function CategoryActionButton({
   user,
 }: CategoryActionButtonProps) {
   const queryClient = useQueryClient()
-  const navigate = useNavigate()
+  const router = useRouter()
 
   const handleContinueLearning = async () => {
     // If user.currentCategory matches current category ID, only navigate
     if (user.currentCategory === category.categoryId) {
-      await navigate({ to: "/", search: {} })
+      await router.navigate({ to: "/", search: {} })
       return
     }
 
@@ -30,7 +30,7 @@ export function CategoryActionButton({
       queryKey: ["authenticated"],
     })
 
-    await navigate({ to: "/", search: {} })
+    await router.navigate({ to: "/", search: {} })
   }
 
   // For non-started categories, show voucher dialog

@@ -1,4 +1,4 @@
-import { CategoryContentItem } from "@/modules/content-management/features/content-list/services/category-content-fn.server"
+import { CategoryContentItem } from "@/modules/shared/domain/entities/category-content-item"
 import { ProgressState } from "@/modules/shared/utils/types"
 import { QuizCard } from "./quiz-card"
 import { SkillCard } from "./skill-card"

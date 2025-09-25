@@ -6,8 +6,6 @@ export const skillContentSchema = Schema.Struct({
   version: Schema.Number.pipe(Schema.int()),
   contentURL: Schema.Array(textContentSchema),
   slug: Schema.String,
-  label: Schema.Array(textContentSchema),
-  metaTags: Schema.Array(Schema.String),
   defaultLanguage: Schema.String,
   difficulty: Schema.Number.pipe(Schema.int()),
   score: Schema.Number.pipe(Schema.int()),

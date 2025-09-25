@@ -74,7 +74,7 @@ export function HomeScreen({ categoryId }: HomeScreenProps) {
           <div className="shrink-0 grow-1 text-center">
             <Link
               to="/"
-              search={{ category: category.categoryId, details: false }}
+              search={{ category: category.categoryId, type: "details" }}
               className="font-outfit text-center text-sm font-medium text-wrap text-white"
             >
               category: {category.name[0].content}
@@ -104,7 +104,10 @@ export function HomeScreen({ categoryId }: HomeScreenProps) {
         </div>
 
         <div className="relative z-20 space-y-6 text-center">
-          <CategoryMapping categoryItems={categoryItems} />
+          <CategoryMapping
+            categoryItems={categoryItems}
+            categoryId={categoryId}
+          />
         </div>
       </div>
     </SpaceBackground>

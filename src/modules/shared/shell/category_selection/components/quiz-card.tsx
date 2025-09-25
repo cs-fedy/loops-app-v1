@@ -1,4 +1,4 @@
-import { CategoryContentItem } from "@/modules/content-management/features/content-list/services/category-content-fn.server"
+import { CategoryContentItem } from "@/modules/shared/domain/entities/category-content-item"
 import { DifficultyTag } from "@/modules/shared/components/common/difficulty-tag"
 import { ClockIcon } from "@/modules/shared/components/icons/clock"
 import { cn } from "@/modules/shared/lib/utils"

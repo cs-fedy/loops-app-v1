@@ -10,12 +10,8 @@ import type { getExploreSkillErrorsSchema } from "@/modules/shared/api/explore/s
 import { getExploreSkill } from "@/modules/shared/api/explore/skill/get-explore-skill"
 import type { getExploreSkillContentErrorsSchema } from "@/modules/shared/api/explore/skill/get-explore-skill-content"
 import { getExploreSkillContent } from "@/modules/shared/api/explore/skill/get-explore-skill-content"
-import type { CategoryItem } from "@/modules/shared/domain/entities/category-item"
-import type { CompletedSkill } from "@/modules/shared/domain/entities/completed-skill"
-import type { Quiz } from "@/modules/shared/domain/entities/quiz"
-import type { Skill } from "@/modules/shared/domain/entities/skill"
+import type { CategoryContentItem } from "@/modules/shared/domain/entities/category-content-item"
 import type { SkillContent } from "@/modules/shared/domain/entities/skill-content"
-import type { StartedQuiz } from "@/modules/shared/domain/entities/started-quiz"
 import type { unknownErrorSchema } from "@/modules/shared/utils/types"
 import { createServerFn } from "@tanstack/react-start"
 import { Cause, Effect, Option } from "effect"
@@ -29,23 +25,6 @@ export type CategoryContentErrors =
   | typeof getCompletedSkillErrorsSchema.Type
   | typeof getStartedQuizErrorsSchema.Type
   | typeof getExploreSkillContentErrorsSchema.Type
-
-export type CategoryContentItem = CategoryItem &
-  (
-    | {
-        itemType: "skills"
-        content: Skill
-        contentType: "skills"
-        completedSkill?: CompletedSkill
-        skillContent?: SkillContent
-      }
-    | {
-        itemType: "quizzes"
-        content: Quiz
-        contentType: "quizzes"
-        startedQuiz?: StartedQuiz
-      }
-  )
 
 export type CategoryContentSuccess = {
   categoryItems: CategoryContentItem[]

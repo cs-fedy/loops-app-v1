@@ -32,7 +32,7 @@ export function CategoryDetails({
   return (
     <div className="flex h-full flex-col">
       <div className="relative flex items-center justify-center px-4 py-6">
-        <BackButton onBack={onBack} show={showBackButton} />
+        {showBackButton && <BackButton onBack={onBack} />}
 
         <h1 className="font-outfit text-loops-light text-xl font-bold tracking-tight">
           Category details

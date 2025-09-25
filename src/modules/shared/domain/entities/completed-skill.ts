@@ -9,7 +9,7 @@ export const completedSkillSchema = Schema.Struct({
   passedTime: Schema.Number.pipe(Schema.int()),
   score: Schema.Number.pipe(Schema.int()),
   startedAt: Schema.DateFromString,
-  endedAt: Schema.DateFromString,
+  endedAt: Schema.optional(Schema.DateFromString),
 })
 
 export type CompletedSkill = typeof completedSkillSchema.Type

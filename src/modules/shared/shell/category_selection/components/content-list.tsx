@@ -52,6 +52,8 @@ export function ContentList({
     },
   }
 
+  // TODO: use tanstack virtual here
+
   return (
     <div className="flex h-full flex-col">
       {/* Header Section */}
@@ -61,7 +63,7 @@ export function ContentList({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
       >
-        <BackButton onBack={onBack} show={showBackButton} />
+        {showBackButton && <BackButton onBack={onBack} />}
 
         <h1 className="font-outfit text-loops-light text-xl font-bold tracking-tight">
           Content list
