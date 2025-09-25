@@ -1,8 +1,8 @@
-import { useCallback } from "react"
-import { useServerFn } from "@tanstack/react-start"
 import { useQueryClient } from "@tanstack/react-query"
-import { startSkillFn } from "./start-skill-fn.server"
+import { useServerFn } from "@tanstack/react-start"
+import { useCallback } from "react"
 import type { StartSkillWire } from "./start-skill-fn.server"
+import { startSkillFn } from "./start-skill-fn.server"
 
 export function useStartSkill() {
   const startSkillServer = useServerFn(startSkillFn)
@@ -18,10 +18,7 @@ export function useStartSkill() {
       // If successful, invalidate relevant queries to refresh data
       if (response._tag === "Success") {
         await queryClient.invalidateQueries({
-          queryKey: ["category-content", categoryId],
-        })
-        await queryClient.invalidateQueries({
-          queryKey: ["explore-categories"],
+          queryKey: ["single-category-item", categoryId, skillId],
         })
       }
 

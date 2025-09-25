@@ -8,7 +8,7 @@ interface CategoryContentParams {
 
 export const categoryContentQuery = (params: CategoryContentParams) =>
   queryOptions({
-    queryKey: ["category-content", params.categoryId, params.size],
+    queryKey: ["category-content", params.categoryId],
     queryFn: async () => {
       const response = await categoryContentFn({
         data: {

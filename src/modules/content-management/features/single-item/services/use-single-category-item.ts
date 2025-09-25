@@ -1,4 +1,11 @@
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query"
+import { CategoryContentItem } from "@/modules/shared/domain/entities/category-content-item"
+import {
+  QueryClient,
+  queryOptions,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
+import { useEffect } from "react"
 import { singleCategoryItemFn } from "./single-category-item-fn.server"
 
 interface SingleCategoryItemParams {
@@ -6,7 +13,10 @@ interface SingleCategoryItemParams {
   itemId: string
 }
 
-export const singleCategoryItemQuery = (params: SingleCategoryItemParams) =>
+export const singleCategoryItemQuery = (
+  params: SingleCategoryItemParams,
+  queryClient: QueryClient,
+) =>
   queryOptions({
     queryKey: ["single-category-item", params.categoryId, params.itemId],
     queryFn: async () => {
@@ -25,6 +35,26 @@ export const singleCategoryItemQuery = (params: SingleCategoryItemParams) =>
   })
 
 export function useSingleCategoryItem(params: SingleCategoryItemParams) {
-  const { data } = useSuspenseQuery(singleCategoryItemQuery(params))
+  const queryClient = useQueryClient()
+
+  const { data } = useSuspenseQuery(
+    singleCategoryItemQuery(params, queryClient),
+  )
+
+  useEffect(() => {
+    if (!data?.categoryItem) return
+    queryClient.setQueryData(
+      ["category-content"],
+      (old: Array<CategoryContentItem> | undefined) => {
+        if (!old) return old
+        return old.map((item) =>
+          item.itemId === params.itemId
+            ? { ...item, categoryItem: data.categoryItem }
+            : item,
+        )
+      },
+    )
+  }, [data?.categoryItem, params.itemId, queryClient])
+
   return { categoryItem: data.categoryItem }
 }
