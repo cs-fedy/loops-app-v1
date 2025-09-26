@@ -49,7 +49,10 @@ const fetchCategoryContentEffect = (params: CategoryContentParams) =>
     // 1) First, fetch all category items
     const categoryItemsExit = yield* Effect.promise(() =>
       Effect.runPromiseExit(
-        listExploreCategoryItems({ categoryId }, { offset, size }),
+        listExploreCategoryItems({
+          args: { categoryId },
+          queryParams: { offset, size },
+        }),
       ),
     )
 

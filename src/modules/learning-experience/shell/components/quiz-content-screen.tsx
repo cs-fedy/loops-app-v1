@@ -8,17 +8,16 @@ type QuizContentScreenProps = {
 }
 
 export function QuizContentScreen({
-  onBack,
   quizItem,
+  onBack,
 }: QuizContentScreenProps) {
   return (
     <div className="bg-loops-background flex h-full flex-col">
       {/* Header */}
       <div className="relative flex items-center justify-center px-4 py-6">
         <BackButton onBack={onBack} />
-
         <h1 className="font-outfit text-loops-light text-xl font-bold tracking-tight">
-          Quiz Content
+          {quizItem.content.label[0].content}
         </h1>
       </div>
 
@@ -105,7 +104,9 @@ export function QuizContentScreen({
       </div>
 
       {/* Bottom Tab Navigation */}
-      <BottomTabNavigator />
+      <div className="fixed bottom-0 left-1/2 z-10 w-full max-w-sm -translate-x-1/2">
+        <BottomTabNavigator />
+      </div>
     </div>
   )
 }

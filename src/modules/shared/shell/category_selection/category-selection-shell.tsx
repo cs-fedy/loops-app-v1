@@ -55,7 +55,7 @@ export function CategorySelectionShell({
 
   if (validCategorySelectionScreens)
     return (
-      <div className="bg-loops-background flex h-screen w-screen flex-col">
+      <div className="bg-loops-background flex h-screen w-full flex-col">
         <Suspense fallback={getSkeleton()}>
           <CategorySelectionScreen searchParams={searchParams} user={user} />
         </Suspense>

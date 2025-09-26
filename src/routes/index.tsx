@@ -68,7 +68,7 @@ export const Route = createFileRoute("/")({
                               </Suspense>
                             </div>
                           )}
-                          <div className="fixed right-0 bottom-0 left-0 z-10">
+                          <div className="fixed bottom-0 left-1/2 z-10 w-full max-w-sm -translate-x-1/2">
                             <BottomTabNavigator />
                           </div>
                         </div>

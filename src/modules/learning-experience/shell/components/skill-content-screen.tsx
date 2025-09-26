@@ -1,6 +1,11 @@
+import { ContentSkeleton } from "@/components/ui/content-skeleton"
 import { BottomTabNavigator } from "@/modules/shared/components/navigation/bottom-tab-navigator"
 import { CategoryContentItem } from "@/modules/shared/domain/entities/category-content-item"
+import { SkillContent } from "@/modules/shared/domain/entities/skill-content"
 import { BackButton } from "@/modules/shared/shell/category_selection/components/back-button"
+import { Suspense } from "react"
+import { SkillActionButton } from "./skill-action-button"
+import { SkillContentRenderer } from "./skill-content-renderer"
 
 type SkillContentScreenProps = {
   skillItem: CategoryContentItem & { contentType: "skills" }
@@ -11,40 +16,41 @@ export function SkillContentScreen({
   skillItem,
   onBack,
 }: SkillContentScreenProps) {
+  const skillContent = skillItem.skillContent as SkillContent
+
+  // Get content URL for markdown fetching
+  const contentUrl = skillContent.contentURL[0].content
+
   return (
     <div className="bg-loops-background flex h-full flex-col">
       {/* Header */}
       <div className="relative flex items-center justify-center px-4 py-6">
         <BackButton onBack={onBack} />
-
         <h1 className="font-outfit text-loops-light text-xl font-bold tracking-tight">
-          Skill Content
+          {skillItem.content.label[0].content}
         </h1>
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 px-4 pb-20">
-        <div className="flex h-full items-center justify-center">
-          <div className="space-y-4 text-center">
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-500/20">
-              <div className="h-10 w-10 rounded-full bg-blue-500"></div>
-            </div>
-            <h2 className="font-outfit text-lg font-semibold text-white">
-              Skill Content
-            </h2>
-            <p className="text-sm text-white/70">
-              Content for skill {skillItem.content.skillId} in category{" "}
-              {skillItem.categoryId}
-            </p>
-            <p className="text-xs text-white/50">
-              This is a placeholder for future skill content implementation
-            </p>
+      <div className="mb-10 flex-1 overflow-y-auto px-7 pb-20">
+        <div className="flex flex-col items-start pt-8">
+          <div className="w-full max-w-sm">
+            <Suspense fallback={<ContentSkeleton />}>
+              <SkillContentRenderer
+                contentUrl={skillContent.contentURL[0].content}
+              />
+            </Suspense>
           </div>
+
+          {/* Action Button */}
+          <SkillActionButton skillItem={skillItem} />
         </div>
       </div>
 
       {/* Bottom Tab Navigation */}
-      <BottomTabNavigator />
+      <div className="fixed bottom-0 left-1/2 z-10 w-full max-w-sm -translate-x-1/2">
+        <BottomTabNavigator />
+      </div>
     </div>
   )
 }

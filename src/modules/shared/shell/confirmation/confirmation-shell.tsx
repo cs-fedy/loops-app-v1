@@ -18,7 +18,7 @@ export function ConfirmationShell({ target, user }: ConfirmationShellProps) {
 
 function ConfirmationScreen({ user }: ConfirmationScreenProps) {
   return (
-    <div className="bg-loops-background relative h-screen w-screen overflow-hidden">
+    <div className="bg-loops-background relative h-screen w-full overflow-hidden">
       {/* Main Content */}
       <div className="relative z-10 flex min-h-[calc(100vh-3rem)] flex-col items-center justify-center px-6 py-8">
         <div className="w-full max-w-sm space-y-8">

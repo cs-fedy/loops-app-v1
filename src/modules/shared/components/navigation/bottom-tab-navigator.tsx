@@ -6,7 +6,7 @@ import { TabItem } from "./tab-item"
 
 export function BottomTabNavigator() {
   return (
-    <div className="relative left-1/2 mb-4 w-full -translate-x-1/2 px-8">
+    <div className="mb-4 px-4">
       <div className="relative flex w-full items-start justify-between rounded-xl bg-[rgba(12,20,43,0.8)] bg-[linear-gradient(90deg,rgba(255,255,255,0.2)_0%,rgba(49,188,230,0.2)_100%)] px-8 pb-3 backdrop:blur-[47px]">
         <TabItem label="Home" icon={<CategoryIcon />} href="/" />
         <TabItem label="Explore" icon={<FlashIcon />} href="/explore" />

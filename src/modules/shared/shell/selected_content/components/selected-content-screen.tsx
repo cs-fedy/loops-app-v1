@@ -1,7 +1,7 @@
 import { QuizContentScreen } from "@/modules/learning-experience/shell/components/quiz-content-screen"
 import { SkillContentScreen } from "@/modules/learning-experience/shell/components/skill-content-screen"
 import type { CategoryContentItem } from "@/modules/shared/domain/entities/category-content-item"
-import { useCanGoBack, useRouter } from "@tanstack/react-router"
+import { useContentNavigation } from "@/modules/shared/navigation"
 
 type SelectedContentScreenProps = {
   selectedItem: CategoryContentItem
@@ -10,13 +10,7 @@ type SelectedContentScreenProps = {
 export function SelectedContentScreen({
   selectedItem,
 }: SelectedContentScreenProps) {
-  const router = useRouter()
-  const canGoBack = useCanGoBack()
-
-  const handleBackNavigation = () => {
-    if (!canGoBack) router.navigate({ to: "/" })
-    else router.history.back()
-  }
+  const { handleBackNavigation } = useContentNavigation()
 
   return (
     <div className="relative flex-1 overflow-hidden">

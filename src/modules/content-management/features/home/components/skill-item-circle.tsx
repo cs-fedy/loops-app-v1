@@ -64,7 +64,10 @@ export function SkillItemCircle({
 
     setIsLoading(true)
 
-    const response = await handleStartSkill(categoryId, item.itemId)
+    const response = await handleStartSkill({
+      categoryId,
+      skillId: item.itemId,
+    })
 
     setIsLoading(false)
 

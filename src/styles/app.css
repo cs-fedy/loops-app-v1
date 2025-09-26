@@ -400,3 +400,19 @@
   left: 50%;
   transform: translateX(-50%);
 }
+
+/* Hide scrollbars while maintaining scroll functionality */
+* {
+  /* Firefox */
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  /* Chrome, Safari, Edge */
+  display: none;
+}
+
+/* Ensure scrolling still works on touch devices */
+* {
+  -ms-overflow-style: none; /* IE and Edge */
+}

@@ -36,7 +36,7 @@ export function SelectedContentShell({
     searchParams.contentId !== undefined
   )
     return (
-      <div className="bg-loops-background flex h-screen w-screen flex-col">
+      <div className="bg-loops-background flex h-screen w-full flex-col">
         <Suspense fallback={<ContentScreenSkeleton />}>
           {cachedItemMatchesRequest && (
             <SelectedContentScreen selectedItem={selectedItem} />

@@ -7,17 +7,20 @@ export function CategoryMapping({
   categoryItems,
   categoryId,
 }: CategoryMappingProps) {
-  const renderRow = (items: Array<CategoryContentItem>, rowIndex: number) => {
-    const isOddRow = rowIndex % 2 === 0
+  const renderRow = (params: {
+    items: Array<CategoryContentItem>
+    rowIndex: number
+  }) => {
+    const isOddRow = params.rowIndex % 2 === 0
 
     if (isOddRow) {
-      const itemIndex = categoryItems.indexOf(items[0])
+      const itemIndex = categoryItems.indexOf(params.items[0])
       const previousItems = categoryItems.slice(0, itemIndex)
 
       return (
-        <div key={`row-${rowIndex}`} className="flex justify-center">
+        <div key={`row-${params.rowIndex}`} className="flex justify-center">
           <CategoryItemCircle
-            item={items[0]}
+            item={params.items[0]}
             index={itemIndex}
             categoryId={categoryId}
             previousItems={previousItems}
@@ -27,15 +30,15 @@ export function CategoryMapping({
     }
 
     return (
-      <div key={`row-${rowIndex}`} className="flex justify-center gap-8">
-        {items.map((item, itemIndex) => {
+      <div key={`row-${params.rowIndex}`} className="flex justify-center gap-8">
+        {params.items.map((item, itemIndex) => {
           const globalIndex = categoryItems.indexOf(item)
           const previousItems = categoryItems.slice(0, globalIndex)
 
           return (
             <CategoryItemCircle
               item={item}
-              key={`row-${rowIndex}-column-${itemIndex}`}
+              key={`row-${params.rowIndex}-column-${itemIndex}`}
               index={globalIndex}
               categoryId={categoryId}
               previousItems={previousItems}
@@ -78,8 +81,10 @@ export function CategoryMapping({
   // TODO: use tanstack virtual here
 
   return (
-    <div className="mb-24 flex flex-col items-center space-y-6">
-      {rows.map((rowItems, rowIndex) => renderRow(rowItems, rowIndex))}
+    <div className="mb-24 flex flex-col items-center gap-y-6">
+      {rows.map((rowItems, rowIndex) =>
+        renderRow({ items: rowItems, rowIndex }),
+      )}
     </div>
   )
 }

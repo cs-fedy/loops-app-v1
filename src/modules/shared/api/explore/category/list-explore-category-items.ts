@@ -58,20 +58,23 @@ export const listExploreCategoryItemsExitSchema = Schema.Exit({
   success: listExploreCategoryItemsSuccessSchema,
 })
 
-export function listExploreCategoryItems(
-  args: ListExploreCategoryItemsArgs,
-  queryParams?: ListExploreCategoryItemsQuery,
-): ListExploreCategoryItemsResult {
-  const parsedArgs = parseEffectSchema(listExploreCategoryItemsArgsSchema, args)
+export function listExploreCategoryItems(params: {
+  args: ListExploreCategoryItemsArgs
+  queryParams?: ListExploreCategoryItemsQuery
+}): ListExploreCategoryItemsResult {
+  const parsedArgs = parseEffectSchema(
+    listExploreCategoryItemsArgsSchema,
+    params.args,
+  )
 
-  const params = new URLSearchParams()
+  const urlParams = new URLSearchParams()
 
-  if (queryParams?.offset !== undefined)
-    params.append("offset", queryParams.offset.toString())
-  if (queryParams?.size !== undefined)
-    params.append("size", queryParams.size.toString())
+  if (params.queryParams?.offset !== undefined)
+    urlParams.append("offset", params.queryParams.offset.toString())
+  if (params.queryParams?.size !== undefined)
+    urlParams.append("size", params.queryParams.size.toString())
 
-  const queryString = params.toString()
+  const queryString = urlParams.toString()
   const url = queryString
     ? `/explore/categories/${parsedArgs.categoryId}/items?${queryString}`
     : `/explore/categories/${parsedArgs.categoryId}/items`

@@ -1,8 +1,8 @@
-import { createFileRoute, Link, redirect } from "@tanstack/react-router"
-import { FirstInstallShell } from "@/modules/shared/shell/first_install/first-install"
-import { isAuthenticated } from "@/modules/shared/guards/is-authenticated"
-import { LoginForm } from "@/modules/authentication/features/login/services/login-form"
 import { LoginGoogle } from "@/modules/authentication/features/login/components/login-google"
+import { LoginForm } from "@/modules/authentication/features/login/services/login-form"
+import { isAuthenticated } from "@/modules/shared/guards/is-authenticated"
+import { FirstInstallShell } from "@/modules/shared/shell/first_install/first-install"
+import { createFileRoute, Link, redirect } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/login")({
   beforeLoad: async () => {
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/login")({
 
 function LoginScreen() {
   return (
-    <div className="bg-loops-background h-screen w-screen px-4 py-6">
+    <div className="bg-loops-background h-screen w-full px-4 py-6">
       <div className="flex size-full flex-col items-start justify-center gap-y-10">
         <h2 className="font-outfit text-loops-cyan text-center text-3xl leading-5 font-bold tracking-tight break-words">
           Welcome Back!

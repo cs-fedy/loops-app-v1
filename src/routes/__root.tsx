@@ -1,13 +1,15 @@
 /// <reference types="vite/client" />
+import { Toaster } from "@/modules/shared/components/ui/sonner"
+import type { RouterContext } from "@/router"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import {
   HeadContent,
   Outlet,
   Scripts,
   createRootRouteWithContext,
 } from "@tanstack/react-router"
+import { TanStackRouterDevtools } from "@tanstack/router-devtools"
 import appCss from "../styles/app.css?url"
-import type { RouterContext } from "@/router"
-import { Toaster } from "@/modules/shared/components/ui/sonner"
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: function RootComponent() {
@@ -17,8 +19,12 @@ export const Route = createRootRouteWithContext<RouterContext>()({
           <HeadContent />
         </head>
         <body>
-          <Outlet />
-          <Toaster 
+          <div className="bg-loops-background w-full">
+            <div className="relative mx-auto w-full overflow-x-hidden sm:max-w-[425px]">
+              <Outlet />
+            </div>
+          </div>
+          <Toaster
             position="bottom-right"
             expand={false}
             richColors={false}
@@ -31,6 +37,18 @@ export const Route = createRootRouteWithContext<RouterContext>()({
               },
             }}
           />
+          {/* Dev tools - only show in development */}
+          {process.env.NODE_ENV === "development" && (
+            <>
+              <ReactQueryDevtools initialIsOpen={false} />
+              <TanStackRouterDevtools />
+              <script
+                crossOrigin="anonymous"
+                id="react-scan"
+                src="//unpkg.com/react-scan/dist/auto.global.js"
+              ></script>
+            </>
+          )}
           <Scripts />
         </body>
       </html>

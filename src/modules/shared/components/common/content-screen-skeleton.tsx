@@ -55,7 +55,7 @@ export function ContentScreenSkeleton() {
       </div>
 
       {/* Bottom Tab Navigation Skeleton */}
-      <div className="fixed bottom-0 left-0 right-0 bg-loops-background/95 backdrop-blur-sm">
+      <div className="fixed bottom-0 left-1/2 z-10 w-full max-w-sm -translate-x-1/2 bg-loops-background/95 backdrop-blur-sm">
         <div className="flex items-center justify-around px-4 py-3">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="flex flex-col items-center space-y-1">

@@ -1,6 +1,5 @@
 import { CategoryContentItem } from "@/modules/shared/domain/entities/category-content-item"
 import {
-  QueryClient,
   queryOptions,
   useQueryClient,
   useSuspenseQuery,
@@ -13,10 +12,7 @@ interface SingleCategoryItemParams {
   itemId: string
 }
 
-export const singleCategoryItemQuery = (
-  params: SingleCategoryItemParams,
-  queryClient: QueryClient,
-) =>
+export const singleCategoryItemQuery = (params: SingleCategoryItemParams) =>
   queryOptions({
     queryKey: ["single-category-item", params.categoryId, params.itemId],
     queryFn: async () => {
@@ -37,9 +33,7 @@ export const singleCategoryItemQuery = (
 export function useSingleCategoryItem(params: SingleCategoryItemParams) {
   const queryClient = useQueryClient()
 
-  const { data } = useSuspenseQuery(
-    singleCategoryItemQuery(params, queryClient),
-  )
+  const { data } = useSuspenseQuery(singleCategoryItemQuery(params))
 
   useEffect(() => {
     if (!data?.categoryItem) return

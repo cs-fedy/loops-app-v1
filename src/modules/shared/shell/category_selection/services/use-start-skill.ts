@@ -9,16 +9,16 @@ export function useStartSkill() {
   const queryClient = useQueryClient()
 
   const handleStartSkill = useCallback(
-    async (categoryId: string, skillId: string) => {
+    async (params: { categoryId: string; skillId: string }) => {
       // Call server function → returns JSON-safe union
       const response = (await startSkillServer({
-        data: { categoryId, skillId },
+        data: { categoryId: params.categoryId, skillId: params.skillId },
       })) as StartSkillWire
 
       // If successful, invalidate relevant queries to refresh data
       if (response._tag === "Success") {
         await queryClient.invalidateQueries({
-          queryKey: ["single-category-item", categoryId, skillId],
+          queryKey: ["single-category-item", params.categoryId, params.skillId],
         })
       }
 
