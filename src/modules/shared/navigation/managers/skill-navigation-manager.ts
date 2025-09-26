@@ -6,19 +6,19 @@ import { OptimizedStrategySelector } from "../utils/optimized-strategy-selector"
 export interface ISkillNavigationManager {
   navigateToNext(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<CategoryContentItem, NavigationError>
   navigateToPrevious(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<CategoryContentItem, NavigationError>
   canNavigateNext(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<boolean, NavigationError>
   canNavigatePrevious(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<boolean, NavigationError>
 }
 
@@ -31,7 +31,7 @@ export class SkillNavigationManager implements ISkillNavigationManager {
 
   navigateToNext(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<CategoryContentItem, NavigationError> {
     const { currentItem, categoryItems } = params
     const self = this
@@ -55,7 +55,7 @@ export class SkillNavigationManager implements ISkillNavigationManager {
 
   navigateToPrevious(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<CategoryContentItem, NavigationError> {
     const { currentItem, categoryItems } = params
     const self = this
@@ -79,7 +79,7 @@ export class SkillNavigationManager implements ISkillNavigationManager {
 
   canNavigateNext(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<boolean, NavigationError> {
     const { currentItem, categoryItems } = params
     const self = this
@@ -103,7 +103,7 @@ export class SkillNavigationManager implements ISkillNavigationManager {
 
   canNavigatePrevious(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<boolean, NavigationError> {
     const { currentItem, categoryItems } = params
     const self = this

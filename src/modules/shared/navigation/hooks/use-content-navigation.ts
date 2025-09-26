@@ -1,5 +1,4 @@
 import { useCategoryContent } from "@/modules/content-management/features/content-list/services/use-category-content"
-import { singleCategoryItemFn } from "@/modules/content-management/features/single-item/services/single-category-item-fn.server"
 import { useSelectedContent } from "@/modules/shared/contexts/selected-content-context"
 import type { CategoryContentItem } from "@/modules/shared/domain/entities/category-content-item"
 import { useToast } from "@/modules/shared/hooks/use-toast"
@@ -13,7 +12,10 @@ import { NavigationManager } from "../managers/navigation-manager"
 import { NavigationCompletionService } from "../services/navigation-completion-service"
 import type { NavigationError } from "../types/navigation-types"
 
-export function useContentNavigation() {
+type UseContentNavigationProps = { categoryId: string }
+export function useContentNavigation({
+  categoryId,
+}: UseContentNavigationProps) {
   const router = useRouter()
   const canGoBack = useCanGoBack()
   const queryClient = useQueryClient()
@@ -29,9 +31,7 @@ export function useContentNavigation() {
   } = useSelectedContent()
 
   // Fetch category items if selectedItem is available
-  const { categoryItems } = selectedItem
-    ? useCategoryContent({ categoryId: selectedItem.categoryId })
-    : { categoryItems: [] }
+  const { categoryItems } = useCategoryContent({ categoryId })
 
   const startSkillHook = useStartSkill()
   const startQuizHook = useStartQuiz()
@@ -45,57 +45,34 @@ export function useContentNavigation() {
   )
 
   const checkIfNextItemIsAvailable = useCallback(
-    async (currentItem: CategoryContentItem): Promise<boolean> => {
+    (currentItem: CategoryContentItem): boolean => {
       // Check if next item exists
       const nextItemId = currentItem.nextCategoryItem
-      if (!nextItemId) {
-        return false
-      }
+      if (!nextItemId) return false
 
-      const fetchNextItemEffect = Effect.tryPromise({
-        try: () =>
-          singleCategoryItemFn({
-            data: { categoryId: currentItem.categoryId, itemId: nextItemId },
-          }),
-        catch: () => ({
-          code: "fetch_error" as const,
-          message: "Failed to fetch next item",
-        }),
-      })
-
-      const result = await Effect.runPromise(
-        Effect.match(fetchNextItemEffect, {
-          onFailure: () => false,
-          onSuccess: (response) => {
-            if (response._tag === "Failure") {
-              return false
-            }
-
-            const nextItem = response.value.categoryItem
-
-            // Check if next item is started or completed
-            const isNextItemStartedOrCompleted =
-              nextItem.contentType === "skills"
-                ? nextItem.completedSkill !== undefined
-                : nextItem.contentType === "quizzes"
-                  ? nextItem.startedQuiz !== undefined
-                  : false
-
-            return isNextItemStartedOrCompleted
-          },
-        }),
+      // Find the next item in the categoryItems array
+      const nextItem = categoryItems.find(
+        (item) => item.categoryItemId === nextItemId,
       )
 
-      return result
+      if (!nextItem) return false
+
+      // Check if next item is started or completed
+      const isNextItemStartedOrCompleted =
+        nextItem.contentType === "skills"
+          ? nextItem.completedSkill !== undefined
+          : nextItem.contentType === "quizzes"
+            ? nextItem.startedQuiz !== undefined
+            : false
+
+      return isNextItemStartedOrCompleted
     },
-    [],
+    [categoryItems],
   )
 
   const shouldUseSimpleNavigation = useCallback(
-    async (currentItem: CategoryContentItem | null): Promise<boolean> => {
-      if (!currentItem) {
-        return false
-      }
+    (currentItem: CategoryContentItem | null): boolean => {
+      if (!currentItem) return false
 
       const isCurrentItemValidated =
         currentItem.contentType === "quizzes"
@@ -104,11 +81,9 @@ export function useContentNavigation() {
             ? currentItem.completedSkill?.isCompleted === true
             : false
 
-      if (!isCurrentItemValidated) {
-        return false
-      }
+      if (!isCurrentItemValidated) return false
 
-      return await checkIfNextItemIsAvailable(currentItem)
+      return checkIfNextItemIsAvailable(currentItem)
     },
     [checkIfNextItemIsAvailable],
   )
@@ -120,32 +95,21 @@ export function useContentNavigation() {
     ) => {
       const targetItemId =
         direction === "next"
-          ? currentItem.nextCategoryItem!
-          : currentItem.previousCategoryItem!
+          ? currentItem.nextCategoryItem
+          : currentItem.previousCategoryItem
 
-      const fetchTargetItemEffect = Effect.tryPromise({
-        try: () =>
-          singleCategoryItemFn({
-            data: { categoryId: currentItem.categoryId, itemId: targetItemId },
-          }),
-        catch: () => ({
-          code: "fetch_error" as const,
-          message: "Failed to fetch target item",
-        }),
-      })
+      // Find the target item in the categoryItems array
+      const targetItem = categoryItems.find(
+        (item) => item.categoryItemId === targetItemId,
+      )
+
+      if (!targetItem)
+        return Effect.fail({
+          code: "navigation_error" as const,
+          message: "Target item not found in category items",
+        })
 
       const navigationEffect = Effect.gen(function* () {
-        const response = yield* fetchTargetItemEffect
-
-        if (response._tag === "Failure") {
-          return yield* Effect.fail({
-            code: "navigation_error" as const,
-            message: "Failed to load target item",
-          })
-        }
-
-        const targetItem = response.value.categoryItem
-
         // Update context with the new item
         setNavigationState({
           isNavigating: true,
@@ -160,8 +124,8 @@ export function useContentNavigation() {
               to: "/",
               search: {
                 category: currentItem.categoryId,
+                contentId: targetItem.itemId,
                 type: "content",
-                contentId: targetItemId,
               },
             }),
           catch: () => ({
@@ -186,17 +150,15 @@ export function useContentNavigation() {
         Effect.match(navigationEffect, {
           onFailure: (failure) => {
             resetNavigationState()
-            error(failure.message || "Simple navigation failed")
+            error(failure.message)
           },
-          onSuccess: ({ targetItem, direction }) => {
-            success(
-              `Navigated to ${direction} ${targetItem.contentType.slice(0, -1)}`,
-            )
-          },
+          onSuccess: ({ targetItem, direction }) =>
+            success(`Navigated to ${direction} ${targetItem.contentType}`),
         }),
       )
     },
     [
+      categoryItems,
       router,
       navigateToItem,
       setNavigationState,
@@ -235,15 +197,24 @@ export function useContentNavigation() {
           },
           onSuccess: async (targetItem) => {
             // Update router to reflect new content
-            await router.navigate({
-              to: "/",
-              search: (prev: any) => ({
-                ...prev,
-                type: "content",
-                contentId: targetItem.itemId,
-                category: targetItem.categoryId,
+            const routerEffect = Effect.tryPromise({
+              try: () =>
+                router.navigate({
+                  to: "/",
+                  search: (prev: any) => ({
+                    ...prev,
+                    type: "content",
+                    contentId: targetItem.itemId,
+                    category: targetItem.categoryId,
+                  }),
+                }),
+              catch: () => ({
+                code: "router_error" as const,
+                message: "Failed to navigate with router",
               }),
             })
+
+            await Effect.runPromise(routerEffect)
 
             // Update context with navigation
             navigateToItem({ item: targetItem, direction })
@@ -257,9 +228,7 @@ export function useContentNavigation() {
               ],
             })
 
-            success(
-              `Navigated to ${direction} ${targetItem.contentType.slice(0, -1)}`,
-            )
+            success(`Navigated to ${direction} ${targetItem.contentType}`)
           },
         }),
       )
@@ -268,24 +237,23 @@ export function useContentNavigation() {
   )
 
   const navigateToNext = useCallback(async () => {
-    if (!selectedItem) {
-      error("No item selected")
-      return
-    }
+    if (!selectedItem) return error("No item selected")
 
     // Check if we can use simple navigation
-    const canUseSimpleNavigation = await shouldUseSimpleNavigation(selectedItem)
+    const canUseSimpleNavigation = shouldUseSimpleNavigation(selectedItem)
 
     if (canUseSimpleNavigation) {
       await performSimpleNavigation(selectedItem, "next")
-    } else {
-      const navigationEffect = navigationManager.navigateToNext({
+      return
+    }
+
+    await handleNavigationResult(
+      navigationManager.navigateToNext({
         currentItem: selectedItem,
         categoryItems,
-      })
-
-      await handleNavigationResult(navigationEffect, "next")
-    }
+      }),
+      "next",
+    )
   }, [
     selectedItem,
     categoryItems,
@@ -297,103 +265,118 @@ export function useContentNavigation() {
   ])
 
   const navigateToPrevious = useCallback(async () => {
-    if (!selectedItem) {
-      error("No item selected")
-      return
-    }
+    if (!selectedItem) return error("No item selected")
 
-    const navigationEffect = navigationManager.navigateToPrevious({
-      currentItem: selectedItem,
-      categoryItems,
-    })
-
-    await handleNavigationResult(navigationEffect, "previous")
-  }, [
-    selectedItem,
-    categoryItems,
-    navigationManager,
-    handleNavigationResult,
-    error,
-  ])
+    // Previous navigation is always simple navigation since previous items are completed by intuition
+    await performSimpleNavigation(selectedItem, "previous")
+  }, [selectedItem, performSimpleNavigation, error])
 
   const canNavigateNext = useCallback(async (): Promise<boolean> => {
     if (!selectedItem) return false
 
-    const canNavigateEffect = navigationManager.canNavigateNext({
-      currentItem: selectedItem,
-      categoryItems,
-    })
-
     return await Effect.runPromise(
-      Effect.match(canNavigateEffect, {
-        onFailure: () => false,
-        onSuccess: (canNavigate) => canNavigate,
-      }),
+      Effect.match(
+        navigationManager.canNavigateNext({
+          currentItem: selectedItem,
+          categoryItems,
+        }),
+        {
+          onFailure: () => false,
+          onSuccess: (canNavigate) => canNavigate,
+        },
+      ),
     )
   }, [selectedItem, categoryItems, navigationManager])
 
   const canNavigatePrevious = useCallback(async (): Promise<boolean> => {
     if (!selectedItem) return false
 
-    const canNavigateEffect = navigationManager.canNavigatePrevious({
-      currentItem: selectedItem,
-      categoryItems,
-    })
-
     return await Effect.runPromise(
-      Effect.match(canNavigateEffect, {
-        onFailure: () => false,
-        onSuccess: (canNavigate) => canNavigate,
-      }),
+      Effect.match(
+        navigationManager.canNavigatePrevious({
+          currentItem: selectedItem,
+          categoryItems,
+        }),
+        {
+          onFailure: () => false,
+          onSuccess: (canNavigate) => canNavigate,
+        },
+      ),
     )
   }, [selectedItem, categoryItems, navigationManager])
 
-  const handleBackNavigation = useCallback(() => {
+  const handleBackNavigation = useCallback(async () => {
     // Reset navigation state when going back
     resetNavigationState()
 
     if (!canGoBack) {
       // Clear selected content and navigate to home
       clearSelectedContent()
-      router.navigate({ to: "/" })
-    } else {
-      // Use browser history
-      router.history.back()
+
+      const routerEffect = Effect.tryPromise({
+        try: () => router.navigate({ to: "/" }),
+        catch: () => ({
+          code: "router_error" as const,
+          message: "Failed to navigate with router",
+        }),
+      })
+
+      await Effect.runPromise(routerEffect)
+      return
     }
+
+    // Use browser history
+    router.history.back()
   }, [canGoBack, router, clearSelectedContent, resetNavigationState])
 
-  const exitContent = useCallback(() => {
+  const exitContent = useCallback(async () => {
     // Clear all navigation state and selected content
     clearSelectedContent()
     resetNavigationState()
 
     // Navigate back to category view
     if (selectedItem) {
-      router.navigate({
-        to: "/",
-        search: (prev: any) => ({
-          ...prev,
-          category: selectedItem.categoryId,
-          type: undefined,
-          contentId: undefined,
+      const routerEffect = Effect.tryPromise({
+        try: () =>
+          router.navigate({
+            to: "/",
+            search: (prev: any) => ({
+              ...prev,
+              category: selectedItem.categoryId,
+              type: undefined,
+              contentId: undefined,
+            }),
+          }),
+        catch: () => ({
+          code: "router_error" as const,
+          message: "Failed to navigate with router",
         }),
       })
-    } else {
-      router.navigate({ to: "/" })
+
+      await Effect.runPromise(routerEffect)
+      return
     }
+
+    const routerEffect = Effect.tryPromise({
+      try: () => router.navigate({ to: "/" }),
+      catch: () => ({
+        code: "router_error" as const,
+        message: "Failed to navigate with router",
+      }),
+    })
+
+    await Effect.runPromise(routerEffect)
   }, [selectedItem, router, clearSelectedContent, resetNavigationState])
 
   const validateAndStartItem = useCallback(
-    async (item: CategoryContentItem): Promise<boolean> => {
-      return await completionService.validateAndStartItem(item)
-    },
+    async (item: CategoryContentItem): Promise<boolean> =>
+      await completionService.validateAndStartItem(item),
     [completionService],
   )
 
   const isItemCompleted = useCallback(
-    (item: CategoryContentItem): boolean => {
-      return completionService.isItemCompleted(item)
-    },
+    (item: CategoryContentItem): boolean =>
+      completionService.isItemCompleted(item),
     [completionService],
   )
 

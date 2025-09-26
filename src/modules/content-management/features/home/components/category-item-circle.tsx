@@ -6,7 +6,7 @@ export type CategoryItemProps = {
   item: CategoryContentItem
   index: number
   categoryId: string
-  previousItems: CategoryContentItem[]
+  previousItems: Array<CategoryContentItem>
 }
 
 export function CategoryItemCircle({

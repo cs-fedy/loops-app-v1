@@ -11,8 +11,11 @@ type SkillActionButtonProps = {
 export function SkillActionButton({ skillItem }: SkillActionButtonProps) {
   const { handleCompleteSkill } = useCompleteSkill()
   const { success, error } = useToast()
-  const { navigateToNext, canNavigateNext, exitContent } =
-    useContentNavigation()
+
+  const { navigateToNext, canNavigateNext, exitContent } = useContentNavigation(
+    { categoryId: skillItem.categoryId },
+  )
+
   const [isLoading, setIsLoading] = useState(false)
 
   const isCompleted =

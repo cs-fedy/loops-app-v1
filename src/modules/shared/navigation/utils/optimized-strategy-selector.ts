@@ -28,7 +28,7 @@ export class OptimizedStrategySelector {
   selectStrategyEffect(params: {
     currentItem: CategoryContentItem
     direction: "next" | "previous"
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<StrategyPayload, NavigationError> {
     const { currentItem, direction, categoryItems } = params
 

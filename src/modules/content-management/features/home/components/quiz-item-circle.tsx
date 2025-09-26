@@ -19,7 +19,7 @@ export type QuizItemCircleProps = {
   item: CategoryContentItem & { contentType: "quizzes" }
   index: number
   categoryId: string
-  previousItems: CategoryContentItem[]
+  previousItems: Array<CategoryContentItem>
 }
 
 export function QuizItemCircle({

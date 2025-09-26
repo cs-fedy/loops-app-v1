@@ -6,19 +6,19 @@ import { OptimizedStrategySelector } from "../utils/optimized-strategy-selector"
 export interface IQuizNavigationManager {
   navigateToNext(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<CategoryContentItem, NavigationError>
   navigateToPrevious(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<CategoryContentItem, NavigationError>
   canNavigateNext(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<boolean, NavigationError>
   canNavigatePrevious(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<boolean, NavigationError>
 }
 
@@ -31,7 +31,7 @@ export class QuizNavigationManager implements IQuizNavigationManager {
 
   navigateToNext(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<CategoryContentItem, NavigationError> {
     const self = this
 
@@ -54,7 +54,7 @@ export class QuizNavigationManager implements IQuizNavigationManager {
 
   navigateToPrevious(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<CategoryContentItem, NavigationError> {
     const self = this
 
@@ -77,7 +77,7 @@ export class QuizNavigationManager implements IQuizNavigationManager {
 
   canNavigateNext(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<boolean, NavigationError> {
     const self = this
 
@@ -100,7 +100,7 @@ export class QuizNavigationManager implements IQuizNavigationManager {
 
   canNavigatePrevious(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<boolean, NavigationError> {
     const self = this
 

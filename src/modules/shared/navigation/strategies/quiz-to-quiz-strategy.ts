@@ -9,6 +9,11 @@ import { BaseNavigationStrategy } from "./base-navigation-strategy"
 export class QuizToQuizStrategy extends BaseNavigationStrategy {
   canNavigate(context: NavigationContext): boolean {
     const { currentItem, direction } = context
+
+    // Previous navigation is always allowed since previous items are completed by intuition
+    if (direction === "previous") return currentItem.contentType === "quizzes"
+
+    // Next navigation requires completion validation
     return (
       currentItem.contentType === "quizzes" &&
       direction === "next" &&

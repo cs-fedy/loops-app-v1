@@ -31,19 +31,19 @@ export interface INavigationStrategy {
 export interface INavigationManager {
   navigateToNext(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<CategoryContentItem, NavigationError>
   navigateToPrevious(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<CategoryContentItem, NavigationError>
   canNavigateNext(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<boolean, NavigationError>
   canNavigatePrevious(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<boolean, NavigationError>
 }
 

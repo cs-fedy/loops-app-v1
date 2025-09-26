@@ -40,7 +40,7 @@ export const getCircleColors = (
 
 export const isItemStartable = (
   index: number,
-  previousItems: CategoryContentItem[],
+  previousItems: Array<CategoryContentItem>,
 ): boolean => {
   // First item is always startable
   if (index === 0) return true

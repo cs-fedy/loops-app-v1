@@ -10,7 +10,9 @@ type SelectedContentScreenProps = {
 export function SelectedContentScreen({
   selectedItem,
 }: SelectedContentScreenProps) {
-  const { handleBackNavigation } = useContentNavigation()
+  const { handleBackNavigation } = useContentNavigation({
+    categoryId: selectedItem.categoryId,
+  })
 
   return (
     <div className="relative flex-1 overflow-hidden">

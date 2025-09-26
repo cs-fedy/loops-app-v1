@@ -19,7 +19,7 @@ export type SkillItemCircleProps = {
   item: CategoryContentItem & { contentType: "skills" }
   index: number
   categoryId: string
-  previousItems: CategoryContentItem[]
+  previousItems: Array<CategoryContentItem>
 }
 
 export function SkillItemCircle({

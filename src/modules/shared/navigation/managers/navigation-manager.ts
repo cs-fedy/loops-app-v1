@@ -24,7 +24,7 @@ export class NavigationManager implements INavigationManager {
 
   navigateToNext(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<CategoryContentItem, NavigationError> {
     if (params.currentItem.contentType === "skills")
       return this.skillNavigationManager.navigateToNext(params)
@@ -40,7 +40,7 @@ export class NavigationManager implements INavigationManager {
 
   navigateToPrevious(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<CategoryContentItem, NavigationError> {
     if (params.currentItem.contentType === "skills")
       return this.skillNavigationManager.navigateToPrevious(params)
@@ -56,7 +56,7 @@ export class NavigationManager implements INavigationManager {
 
   canNavigateNext(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<boolean, NavigationError> {
     if (params.currentItem.contentType === "skills")
       return this.skillNavigationManager.canNavigateNext(params)
@@ -69,7 +69,7 @@ export class NavigationManager implements INavigationManager {
 
   canNavigatePrevious(params: {
     currentItem: CategoryContentItem
-    categoryItems: CategoryContentItem[]
+    categoryItems: Array<CategoryContentItem>
   }): Effect.Effect<boolean, NavigationError> {
     if (params.currentItem.contentType === "skills")
       return this.skillNavigationManager.canNavigatePrevious(params)

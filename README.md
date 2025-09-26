@@ -15,18 +15,21 @@ Loops is the ultimate Progressive Web App (PWA) designed to help kids discover t
 ## 🛠️ Tech Stack
 
 ### Frontend Framework
+
 - **React 19** - Latest React with modern features
 - **TypeScript** - Type-safe development
 - **TanStack Start** - Full-stack React framework
 - **Vite** - Fast build tool and development server
 
 ### State Management & Data Fetching
+
 - **TanStack Query** - Server state management with caching
 - **TanStack Router** - Type-safe routing
 - **TanStack Form** - Powerful form handling
 - **Effect** - Functional error handling and async operations
 
 ### UI & Styling
+
 - **TailwindCSS** - Utility-first CSS framework
 - **Shadcn/ui** - High-quality React components
 - **Radix UI** - Accessible component primitives
@@ -34,6 +37,7 @@ Loops is the ultimate Progressive Web App (PWA) designed to help kids discover t
 - **Lucide React** - Beautiful icons
 
 ### Development Tools
+
 - **ESLint** - Code linting with security plugins
 - **Prettier** - Code formatting
 - **Husky** - Git hooks for code quality
@@ -41,6 +45,7 @@ Loops is the ultimate Progressive Web App (PWA) designed to help kids discover t
 - **Testing Library** - React component testing
 
 ### PWA & Performance
+
 - **VitePWA** - Progressive Web App capabilities
 - **Axios** - HTTP client for API communication
 - **Zod** - Runtime type validation
@@ -64,53 +69,63 @@ src/
 ```
 
 ### Module Structure
+
 Each module follows a consistent structure:
+
 - `features/` - UI components and pages
 - `services/` - API calls and business logic
 - `types/` - TypeScript type definitions
 - `hooks/` - Custom React hooks
 
 ### Shared Module
+
 The shared module contains:
+
 - `api/` - API configuration and interceptors
 - `components/` - Reusable components
 - `domain/` - Domain entities and models
 - `guards/` - Route guards and middleware
-- `navigation/` - Navigation management system
+- `navigation/` - Advanced navigation system with smart routing, completion tracking, and strategy-based content transitions (see `.trae/navigation-module-docs.md`)
 - `services/` - Shared business logic
 - `utils/` - Utility functions
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - Yarn package manager
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd loops-client
    ```
 
 2. **Install dependencies**
+
    ```bash
    yarn install
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env
    ```
-   
+
    Configure the following variables:
+
    ```env
    VITE_API_URL="http://localhost:8080/api"
    VITE_SESSION_SECRET_KEY="your-secret-key"
    ```
 
 4. **Start the development server**
+
    ```bash
    yarn dev
    ```
@@ -128,12 +143,14 @@ The shared module contains:
 ## 🔧 Development Guidelines
 
 ### Code Style
+
 - **Language**: All code and comments in English
 - **Naming**: camelCase for variables, PascalCase for React components
 - **Files**: kebab-case for file names
 - **Folders**: snake_case for folder names
 
 ### Architecture Principles
+
 1. **Type Safety First**: Never use `any`, enforce strict typing
 2. **Validation at Boundaries**: All API responses validated with Zod
 3. **Effect Everywhere**: Use Effect package for error handling
@@ -141,11 +158,13 @@ The shared module contains:
 5. **Single Responsibility**: One file = one purpose
 
 ### Error Handling
+
 - All API calls wrapped in **Effect** for typed error handling
 - Structured error responses with `code`, `message`, and optional `payload`
 - No unhandled promises or silent failures
 
 ### Testing
+
 - Unit tests for hooks, services, and utilities
 - Integration tests for API layer with mocked responses
 - E2E tests for critical user flows
@@ -162,6 +181,7 @@ The shared module contains:
 ## 🌍 Internationalization
 
 The app supports multiple languages using React i18n:
+
 - Default language: English
 - Translation keys for all UI text
 - RTL support ready
@@ -178,17 +198,22 @@ The app supports multiple languages using React i18n:
 ## 🚀 Deployment
 
 ### Build for Production
+
 ```bash
 yarn build
 ```
 
 ### Environment Setup
+
 Ensure production environment variables are configured:
+
 - `VITE_API_URL` - Production API endpoint
 - `VITE_SESSION_SECRET_KEY` - Strong secret key for sessions
 
 ### PWA Deployment
+
 The app automatically generates:
+
 - Service worker for offline functionality
 - Web app manifest for installation
 - Optimized assets for different screen sizes
@@ -208,6 +233,7 @@ MIT License - see LICENSE file for details
 ## 🎯 Project Goals
 
 Loops aims to make coding education:
+
 - **Accessible** - Available on any device, works offline
 - **Engaging** - Gamified learning that keeps kids motivated
 - **Effective** - Structured curriculum with measurable progress

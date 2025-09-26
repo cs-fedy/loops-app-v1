@@ -27,7 +27,7 @@ export type CategoryContentErrors =
   | typeof getExploreSkillContentErrorsSchema.Type
 
 export type CategoryContentSuccess = {
-  categoryItems: CategoryContentItem[]
+  categoryItems: Array<CategoryContentItem>
 }
 
 export type CategoryContentParams = {
@@ -70,7 +70,7 @@ const fetchCategoryContentEffect = (params: CategoryContentParams) =>
     const { categoryItems } = categoryItemsExit.value
 
     // 2) For each category item, fetch the associated content (skill or quiz) and optional status
-    const categoryContentItems: CategoryContentItem[] = []
+    const categoryContentItems: Array<CategoryContentItem> = []
 
     for (const categoryItem of categoryItems) {
       if (categoryItem.itemType === "skills") {
