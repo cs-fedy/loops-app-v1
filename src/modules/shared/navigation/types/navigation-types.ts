@@ -48,10 +48,10 @@ export interface INavigationManager {
 }
 
 export type NavigationStrategyType =
-  | "skill-to-skill"
-  | "skill-to-quiz"
-  | "quiz-to-skill"
-  | "quiz-to-quiz"
+  | "skills-to-skills"
+  | "skills-to-quizzes"
+  | "quizzes-to-skills"
+  | "quizzes-to-quizzes"
 
 export type StrategyPayload = {
   strategy: INavigationStrategy

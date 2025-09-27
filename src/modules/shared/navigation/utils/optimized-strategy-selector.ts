@@ -18,10 +18,10 @@ export class OptimizedStrategySelector {
 
   constructor() {
     this.strategies = new Map([
-      ["skill-to-skill", new SkillToSkillStrategy()],
-      ["skill-to-quiz", new SkillToQuizStrategy()],
-      ["quiz-to-skill", new QuizToSkillStrategy()],
-      ["quiz-to-quiz", new QuizToQuizStrategy()],
+      ["skills-to-skills", new SkillToSkillStrategy()],
+      ["skills-to-quizzes", new SkillToQuizStrategy()],
+      ["quizzes-to-skills", new QuizToSkillStrategy()],
+      ["quizzes-to-quizzes", new QuizToQuizStrategy()],
     ])
   }
 
@@ -60,7 +60,7 @@ export class OptimizedStrategySelector {
     const adjacentContentType = adjacentItem.contentType
 
     const strategyType: NavigationStrategyType =
-      `${currentContentType.slice(0, -1)}-to-${adjacentContentType.slice(0, -1)}` as NavigationStrategyType
+      `${currentContentType}-to-${adjacentContentType}` as NavigationStrategyType
 
     const strategy = this.strategies.get(strategyType)
 
