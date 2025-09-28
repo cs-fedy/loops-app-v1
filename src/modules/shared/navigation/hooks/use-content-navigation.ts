@@ -152,8 +152,7 @@ export function useContentNavigation({
             resetNavigationState()
             error(failure.message)
           },
-          onSuccess: ({ targetItem, direction }) =>
-            success(`Navigated to ${direction} ${targetItem.contentType}`),
+          onSuccess: () => {},
         }),
       )
     },
@@ -369,9 +368,24 @@ export function useContentNavigation({
   }, [selectedItem, router, clearSelectedContent, resetNavigationState])
 
   const validateAndStartItem = useCallback(
-    async (item: CategoryContentItem): Promise<boolean> =>
-      await completionService.validateAndStartItem(item),
-    [completionService],
+    async (): Promise<boolean> => {
+      if (!selectedItem) return false
+
+      // Get the next item ID from the current item
+      const nextItemId = selectedItem.nextCategoryItem
+      if (!nextItemId) return false
+
+      // Find the next item in the categoryItems array
+      const nextItem = categoryItems.find(
+        (item) => item.categoryItemId === nextItemId,
+      )
+
+      if (!nextItem) return false
+
+      // Validate and start the next item
+      return await completionService.validateAndStartItem(nextItem)
+    },
+    [completionService, selectedItem, categoryItems],
   )
 
   const isItemCompleted = useCallback(

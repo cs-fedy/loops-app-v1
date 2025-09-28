@@ -1,3 +1,6 @@
+import { HalfStarIcon } from "@/modules/shared/components/icons/half-star"
+import { NoteIcon } from "@/modules/shared/components/icons/note"
+import { TimerIcon } from "@/modules/shared/components/icons/timer"
 import { BottomTabNavigator } from "@/modules/shared/components/navigation/bottom-tab-navigator"
 import { CategoryContentItem } from "@/modules/shared/domain/entities/category-content-item"
 import { BackButton } from "@/modules/shared/shell/category_selection/components/back-button"
@@ -27,8 +30,13 @@ export function QuizContentScreen({
           <div className="w-full max-w-sm">
             {/* Quiz Content Box - Inspired by the box design */}
             <div className="rounded-3xl bg-white p-8 shadow-lg">
-              {/* Glow Effect */}
-              <div className="mx-auto mb-6 h-26 w-26 rounded-full bg-cyan-400/20 blur-sm"></div>
+              <div className="relative mx-auto mb-6 flex h-26 w-26 items-center justify-center">
+                {/* Glow Effect */}
+                <div className="absolute inset-0 z-0 rounded-full bg-cyan-400/20 blur-sm"></div>
+                <div className="text-loops-cyan z-10 h-24 w-24 shrink-0 grow-0">
+                  <NoteIcon />
+                </div>
+              </div>
 
               {/* Title */}
               <h2 className="font-outfit mb-4 text-center text-2xl font-medium text-gray-900">
@@ -38,14 +46,12 @@ export function QuizContentScreen({
               {/* Stats */}
               <div className="mb-6 flex items-end justify-center gap-8">
                 <div className="flex flex-col items-center">
-                  <div className="mb-3 h-6 w-6 text-purple-600">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M9 11H7v8h2v-8zm4-4h-2v12h2V7zm4-2h-2v14h2V5z" />
-                    </svg>
+                  <div className="mb-3 h-10 w-10 shrink-0 grow-0 text-purple-600">
+                    <NoteIcon />
                   </div>
                   <div className="text-center">
                     <p className="font-outfit text-xl font-semibold text-gray-900">
-                      ?
+                      {quizItem.content.questionsCount}
                     </p>
                     <p className="font-outfit text-sm text-gray-600">
                       Questions
@@ -54,30 +60,26 @@ export function QuizContentScreen({
                 </div>
 
                 <div className="flex flex-col items-center">
-                  <div className="mb-3 h-6 w-6 text-yellow-600">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
+                  <div className="mb-3 h-10 w-10 shrink-0 grow-0 text-yellow-600">
+                    <HalfStarIcon />
                   </div>
                   <div className="text-center">
                     <p className="font-outfit text-xl font-semibold text-gray-900">
-                      ?
+                      {quizItem.content.score}
                     </p>
                     <p className="font-outfit text-sm text-gray-600">XP</p>
                   </div>
                 </div>
 
                 <div className="flex flex-col items-center">
-                  <div className="mb-3 h-6 w-6 text-orange-600">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                    </svg>
+                  <div className="mb-3 h-10 w-10 shrink-0 grow-0 text-orange-600">
+                    <TimerIcon />
                   </div>
                   <div className="text-center">
                     <p className="font-outfit text-xl font-semibold text-gray-900">
-                      ?
+                      {quizItem.content.totalTime}
                     </p>
-                    <p className="font-outfit text-sm text-gray-600">Time</p>
+                    <p className="font-outfit text-sm text-gray-600">Second</p>
                   </div>
                 </div>
               </div>
@@ -88,16 +90,6 @@ export function QuizContentScreen({
                   Start Quiz
                 </p>
               </button>
-            </div>
-
-            {/* Placeholder Text */}
-            <div className="mt-6 text-center">
-              <p className="text-xs text-white/50">
-                Quiz {quizItem.content.quizId} in category {quizItem.categoryId}
-              </p>
-              <p className="mt-1 text-xs text-white/30">
-                This is a placeholder for future quiz implementation
-              </p>
             </div>
           </div>
         </div>
